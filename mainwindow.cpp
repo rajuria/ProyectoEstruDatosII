@@ -66,3 +66,14 @@ void MainWindow::on_btn_Reporte_clicked()
     AdminEmpleados.GenerarReporte();
 }
 
+void MainWindow::on_GestionE_PB_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+

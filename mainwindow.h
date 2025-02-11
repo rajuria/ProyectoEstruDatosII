@@ -25,6 +25,10 @@ private slots:
 
     void on_btn_Reporte_clicked();
 
+    void on_pushButton_clicked();
+
+    void on_GestionE_PB_clicked();
+
 private:
     Ui::MainWindow *ui;
     AdministradorEmpleados AdminEmpleados;
