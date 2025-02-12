@@ -25,9 +25,27 @@ private slots:
 
     void on_btn_Reporte_clicked();
 
-    void on_pushButton_clicked();
-
     void on_GestionE_PB_clicked();
+
+    void on_GestionI_PB_clicked();
+
+    void on_BackEmpleados_clicked();
+
+    void on_GestionC_PB_clicked();
+
+    void on_GestionV_PB_clicked();
+
+    void on_GestionP_PB_clicked();
+
+    void on_BackPedidos_clicked();
+
+    void on_BackVentas_clicked();
+
+    void on_BackCliente_clicked();
+
+    void on_BackInventario_clicked();
+
+    void on_PB_Salir_clicked();
 
 private:
     Ui::MainWindow *ui;

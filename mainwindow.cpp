@@ -71,9 +71,61 @@ void MainWindow::on_GestionE_PB_clicked()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
+void MainWindow::on_GestionI_PB_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(2);
+}
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_BackEmpleados_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
+}
+
+
+void MainWindow::on_GestionC_PB_clicked()
+{
+     ui->stackedWidget->setCurrentIndex(3);
+}
+
+
+void MainWindow::on_GestionV_PB_clicked()
+{
+     ui->stackedWidget->setCurrentIndex(4);
+}
+
+
+void MainWindow::on_GestionP_PB_clicked()
+{
+     ui->stackedWidget->setCurrentIndex(5);
+}
+
+
+void MainWindow::on_BackPedidos_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+
+void MainWindow::on_BackVentas_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+
+void MainWindow::on_BackCliente_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+
+void MainWindow::on_BackInventario_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+
+void MainWindow::on_PB_Salir_clicked()
+{
+    exit(0);
 }
 

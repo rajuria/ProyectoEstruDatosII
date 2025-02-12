@@ -1554,7 +1554,7 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="BackEmpleados">
       <property name="geometry">
        <rect>
         <x>749</x>
@@ -1577,10 +1577,102 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="GestionInventario"/>
-    <widget class="QWidget" name="GestionCliente"/>
-    <widget class="QWidget" name="GestionVentas"/>
-    <widget class="QWidget" name="GestionPedidos"/>
+    <widget class="QWidget" name="GestionInventario">
+     <widget class="QPushButton" name="BackInventario">
+      <property name="geometry">
+       <rect>
+        <x>750</x>
+        <y>20</y>
+        <width>41</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Algerian</family>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>&lt;-</string>
+      </property>
+      <property name="flat">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="GestionCliente">
+     <widget class="QPushButton" name="BackCliente">
+      <property name="geometry">
+       <rect>
+        <x>750</x>
+        <y>20</y>
+        <width>41</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Algerian</family>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>&lt;-</string>
+      </property>
+      <property name="flat">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="GestionVentas">
+     <widget class="QPushButton" name="BackVentas">
+      <property name="geometry">
+       <rect>
+        <x>750</x>
+        <y>20</y>
+        <width>41</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Algerian</family>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>&lt;-</string>
+      </property>
+      <property name="flat">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="GestionPedidos">
+     <widget class="QPushButton" name="BackPedidos">
+      <property name="geometry">
+       <rect>
+        <x>750</x>
+        <y>10</y>
+        <width>41</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Algerian</family>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>&lt;-</string>
+      </property>
+      <property name="flat">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
