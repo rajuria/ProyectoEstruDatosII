@@ -13,6 +13,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    AdminClientes.h \
     AdministradorEmpleados.h \
     mainwindow.h
 
