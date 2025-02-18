@@ -129,3 +129,13 @@ void MainWindow::on_PB_Salir_clicked()
     exit(0);
 }
 
+
+void MainWindow::on_pushButton_clicked()
+{
+    string Name = ui->lineEdit_4->text().toStdString();
+    string ID = ui->lineEdit_6->text().toStdString();
+    string PW = ui->lineEdit_8->text().toStdString();
+
+
+}
+

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "AdministradorEmpleados.h"
+#include "AdminClientes.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -47,9 +48,12 @@ private slots:
 
     void on_PB_Salir_clicked();
 
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     AdministradorEmpleados AdminEmpleados;
+    AdminClientes clientes;
     void ReloadTable();
 };
 #endif // MAINWINDOW_H
