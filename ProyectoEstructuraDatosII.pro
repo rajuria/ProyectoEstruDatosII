@@ -14,6 +14,7 @@ SOURCES += \
 
 HEADERS += \
     AdminClientes.h \
+    AdminInventario.h \
     AdministradorEmpleados.h \
     mainwindow.h
 
