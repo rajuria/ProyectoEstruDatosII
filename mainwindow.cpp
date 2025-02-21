@@ -68,12 +68,12 @@ void MainWindow::on_btn_Reporte_clicked()
 
 void MainWindow::on_GestionE_PB_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget->setCurrentIndex(2);
 }
 
 void MainWindow::on_GestionI_PB_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(2);
+    ui->stackedWidget->setCurrentIndex(3);
 }
 
 void MainWindow::on_BackEmpleados_clicked()
@@ -135,7 +135,53 @@ void MainWindow::on_pushButton_clicked()
     string Name = ui->lineEdit_4->text().toStdString();
     string ID = ui->lineEdit_6->text().toStdString();
     string PW = ui->lineEdit_8->text().toStdString();
+    if(ID=="Admin" && PW=="Admin")
+    {
+        ui->stackedWidget->setCurrentIndex(1);
+    }
+    else
+    {
+        QMessageBox::critical(this, "Error", "Usuario/Contrasena incorrectos. Intente de nuevo.");
+    }
 
 
+}
+
+
+void MainWindow::on_btn_AgregarInventario_clicked()
+{
+    string ID=ui->tbx_ID_2->text().toStdString();
+    string Nombre = ui->tbx_Nombre_2->text().toStdString();
+    double Precio = ui->tbx_precio->text().toDouble();
+    int Cantidad = ui->sb_Cantidad->value();
+    AdministradorInventario.addProduct(Producto(ID,Nombre,Precio,Cantidad));
+    ActualizarProductos();
+}
+
+void MainWindow::ActualizarProductos()
+{
+    ui->tbl_Output->clear();
+    ui->tbl_Inventario->setColumnCount(4);
+    ui->tbl_Inventario->setHorizontalHeaderLabels(QStringList()<<"ID"<<"Nombre"<<"Precio"<<"Cantidad Disponible");
+    ui->tbl_Inventario->setRowCount(AdministradorInventario.products.size());
+    for(uint i=0;i<AdministradorInventario.products.size();i++)
+    {
+        ui->tbl_Inventario->setItem(i,0,new QTableWidgetItem(QString::fromStdString(AdministradorInventario.products[i].ID)));
+        ui->tbl_Inventario->setItem(i,1,new QTableWidgetItem(QString::fromStdString(AdministradorInventario.products[i].Nombre)));
+        ui->tbl_Inventario->setItem(i,2,new QTableWidgetItem(QString::number(AdministradorInventario.products[i].Precio)));
+        ui->tbl_Inventario->setItem(i,3,new QTableWidgetItem(QString::number(AdministradorInventario.products[i].Cantidad)));
+    }
+}
+
+
+void MainWindow::on_btn_CargarInv_clicked()
+{
+    AdministradorInventario.CargarDatos();
+}
+
+
+void MainWindow::on_btn_GuardarInv_clicked()
+{
+    AdministradorInventario.GuardarDatos();
 }
 
