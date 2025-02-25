@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QInputDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -13,6 +14,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+string employeeFound;
 
 void MainWindow::on_btn_AgregarEmpleado_clicked()
 {
@@ -78,7 +80,7 @@ void MainWindow::on_GestionI_PB_clicked()
 
 void MainWindow::on_BackEmpleados_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(0);
+    ui->stackedWidget->setCurrentIndex(1);
 }
 
 
@@ -102,46 +104,88 @@ void MainWindow::on_GestionP_PB_clicked()
 
 void MainWindow::on_BackPedidos_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(0);
+    if(employeeFound == "Gerente" || employeeFound == "gerente"){
+        ui->stackedWidget->setCurrentIndex(1);
+    }else if(employeeFound == "Vendedor" || employeeFound == "vendedor"){
+        ui->stackedWidget->setCurrentIndex(2);
+    }
+
 }
 
 
 void MainWindow::on_BackVentas_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(0);
+    if(employeeFound == "Gerente" || employeeFound == "gerente"){
+        ui->stackedWidget->setCurrentIndex(1);
+    }else if(employeeFound == "Vendedor" || employeeFound == "vendedor"){
+        ui->stackedWidget->setCurrentIndex(2);
+    }
 }
 
 
 void MainWindow::on_BackCliente_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(0);
+    ui->stackedWidget->setCurrentIndex(1);
 }
 
 
 void MainWindow::on_BackInventario_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(0);
+    if(employeeFound == "Gerente" || employeeFound == "gerente"){
+        ui->stackedWidget->setCurrentIndex(1);
+    }else if(employeeFound == "Vendedor" || employeeFound == "vendedor"){
+        ui->stackedWidget->setCurrentIndex(2);
+    }
 }
 
 
 void MainWindow::on_PB_Salir_clicked()
 {
-    exit(0);
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
 
 void MainWindow::on_pushButton_clicked()
 {
+
     string Name = ui->lineEdit_4->text().toStdString();
     string ID = ui->lineEdit_6->text().toStdString();
-    string PW = ui->lineEdit_8->text().toStdString();
-    if(ID=="Admin" && PW=="Admin")
-    {
-        ui->stackedWidget->setCurrentIndex(1);
+    QString employeeS = ui->comboBoxTE->currentText();
+
+    if(Name.empty() || ID.empty()){
+        QMessageBox::warning(this, "Advertencia", "Porfavor, ingrese tanto el nombre como el ID.");
+        return;
     }
-    else
-    {
-        QMessageBox::critical(this, "Error", "Usuario/Contrasena incorrectos. Intente de nuevo.");
+
+    if(employeeS.isEmpty() || employeeS == "Seleccione un empleado..."){
+        QMessageBox::warning(this, "Advertencia", "Porfavor, seleccione un tipo de empleado.");
+        return;
+    }
+
+    string employeeStr = employeeS.toStdString();
+    bool encontrado = false;
+
+    for (const auto& emp: AdminEmpleados.Empleados){
+        if(emp.ID == ID && emp.Nombre == Name && emp.Activo){
+            if(emp.Puesto == employeeStr){
+                encontrado = true;
+                employeeFound = emp.Puesto;
+                break;
+            }
+        }
+    }
+
+    if(!encontrado){
+        QMessageBox::critical(this, "Error!!", "No se encontro ningun usuario activo con los datos ingresados.");
+        return;
+    }
+
+    if(employeeFound == "Gerente" || employeeFound == "gerente"){
+        ui->stackedWidget->setCurrentIndex(1);
+    }else if(employeeFound == "Comprador" || employeeFound == "comprador"){
+        ui->stackedWidget->setCurrentIndex(7);
+    }else if(employeeFound == "Vendedor" || employeeFound == "vendedor"){
+        ui->stackedWidget->setCurrentIndex(2);
     }
 
 
@@ -183,5 +227,27 @@ void MainWindow::on_btn_CargarInv_clicked()
 void MainWindow::on_btn_GuardarInv_clicked()
 {
     AdministradorInventario.GuardarDatos();
+}
+
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    bool ok;
+        QString password = QInputDialog::getText(this, "Verificar Administrador", "Ingrese la contraseña de administrador:", QLineEdit::Password, "", &ok);
+        if (!ok || password.isEmpty())
+        {
+            QMessageBox::information(this, "Acceso Denegado", "No se ingresó una contraseña.");
+            return;
+        }
+        if(password == "Admin")
+        {
+            QMessageBox::information(this, "Acceso Concedido", "Administrador verificado. Proceda a agregar el cliente.");
+            ui->stackedWidget->setCurrentIndex(3);
+        }
+        else
+        {
+            QMessageBox::critical(this, "Acceso Denegado", "La contraseña ingresada es incorrecta.");
+        }
+
 }
 

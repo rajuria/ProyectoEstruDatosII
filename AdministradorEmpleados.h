@@ -41,6 +41,7 @@ public:
     void CargarDatos(const string& filename= "Empleados.a");
     void GenerarReporte(const string& filename= "Empleados.csv") const;
     void AgregarEmpleado(Empleado EmpleadoNuevo);
+    string ObtenerEmpleado(const string& ID, const string& nombre);
 
 };
 
@@ -136,6 +137,16 @@ inline void AdministradorEmpleados::GenerarReporte(const std::string &filename) 
 inline void AdministradorEmpleados::AgregarEmpleado(Empleado EmpleadoNuevo)
 {
     Empleados.push_back(EmpleadoNuevo);
+}
+
+inline string AdministradorEmpleados::ObtenerEmpleado(const std::string &ID, const std::string &nombre)
+{
+    for(const auto& emp: Empleados){
+        if(emp.ID == ID && emp.Nombre == nombre && emp.Activo){
+            return emp.Puesto;
+        }
+    }
+    return "";
 }
 
 #endif // ADMINISTRADOREMPLEADOS_H
