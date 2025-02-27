@@ -30,6 +30,7 @@ void MainWindow::on_btn_AgregarEmpleado_clicked()
     ui->tbx_Departamento->setText("");
     ui->tbx_Salario->setText("");
     ui->tbx_Contrasena->setText("");
+    AdminEmpleados.GuardarDatos();
     ReloadTable();
 }
 
@@ -86,11 +87,14 @@ void MainWindow::on_btn_Reporte_clicked()
 
 void MainWindow::on_GestionE_PB_clicked()
 {
+    AdminEmpleados.CargarDatos();
+    ReloadTable();
     ui->stackedWidget->setCurrentIndex(3);
 }
 
 void MainWindow::on_GestionI_PB_clicked()
 {
+    ActualizarProductos();
     ui->stackedWidget->setCurrentIndex(4);
 }
 
@@ -127,6 +131,10 @@ void MainWindow::on_BackPedidos_clicked()
     }else if(employeeFound == "Vendedor" || employeeFound == "vendedor"){
         ui->stackedWidget->setCurrentIndex(2);
     }
+    else
+    {
+       ui->stackedWidget->setCurrentIndex(1);
+    }
 
 }
 
@@ -137,6 +145,10 @@ void MainWindow::on_BackVentas_clicked()
         ui->stackedWidget->setCurrentIndex(1);
     }else if(employeeFound == "Vendedor" || employeeFound == "vendedor"){
         ui->stackedWidget->setCurrentIndex(2);
+    }
+    else
+    {
+        ui->stackedWidget->setCurrentIndex(1);
     }
 }
 
@@ -153,6 +165,10 @@ void MainWindow::on_BackInventario_clicked()
         ui->stackedWidget->setCurrentIndex(1);
     }else if(employeeFound == "Vendedor" || employeeFound == "vendedor"){
         ui->stackedWidget->setCurrentIndex(2);
+    }
+    else
+    {
+       ui->stackedWidget->setCurrentIndex(1);
     }
 }
 
@@ -190,7 +206,6 @@ void MainWindow::on_pushButton_clicked()
     }
     else
     {
-        QMessageBox::information(this, "Exito", "Usuario Correcto");
         if(Puesto=="Administrador")
         {
             ui->stackedWidget->setCurrentIndex(1);
@@ -211,11 +226,13 @@ void MainWindow::on_btn_AgregarInventario_clicked()
     double Precio = ui->tbx_precio->text().toDouble();
     int Cantidad = ui->sb_Cantidad->value();
     AdministradorInventario.addProduct(Producto(ID,Nombre,Precio,Cantidad));
+    AdministradorInventario.GuardarDatos();
     ActualizarProductos();
 }
 
 void MainWindow::ActualizarProductos()
 {
+    AdministradorInventario.CargarDatos();
     ui->tbl_Output->clear();
     ui->tbl_Inventario->setColumnCount(4);
     ui->tbl_Inventario->setHorizontalHeaderLabels(QStringList()<<"ID"<<"Nombre"<<"Precio"<<"Cantidad Disponible");

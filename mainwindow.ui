@@ -1297,6 +1297,9 @@
           <height>24</height>
          </rect>
         </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton">
         <property name="geometry">
@@ -1957,9 +1960,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>230</y>
+        <y>270</y>
         <width>771</width>
-        <height>311</height>
+        <height>271</height>
        </rect>
       </property>
      </widget>
@@ -2222,6 +2225,32 @@
        </property>
       </item>
      </widget>
+     <widget class="QLineEdit" name="tbx_BuscarEmpleado">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>240</y>
+        <width>141</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>Buscar</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_5">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>220</y>
+        <width>161</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Lista de Empleados:</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="GestionInventario">
      <widget class="QPushButton" name="BackInventario">
@@ -2250,9 +2279,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>160</y>
+        <y>190</y>
         <width>771</width>
-        <height>391</height>
+        <height>361</height>
        </rect>
       </property>
      </widget>
@@ -2261,7 +2290,7 @@
        <rect>
         <x>20</x>
         <y>140</y>
-        <width>121</width>
+        <width>181</width>
         <height>16</height>
        </rect>
       </property>
@@ -2399,6 +2428,19 @@
        <string>Cargar Inventario</string>
       </property>
      </widget>
+     <widget class="QLineEdit" name="tbx_BuscarProductoEnInventario">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>160</y>
+        <width>191</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>Buscar</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="GestionCliente">
      <widget class="QPushButton" name="BackCliente">
@@ -2427,16 +2469,16 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>30</y>
+        <y>60</y>
         <width>461</width>
-        <height>521</height>
+        <height>491</height>
        </rect>
       </property>
      </widget>
-     <widget class="QLabel" name="label_5">
+     <widget class="QLabel" name="lbl_ListaDeClientes">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>30</x>
         <y>10</y>
         <width>121</width>
         <height>16</height>
@@ -2513,6 +2555,19 @@
         <string>Agregar Cliente</string>
        </property>
       </widget>
+     </widget>
+     <widget class="QLineEdit" name="tbx_BuscarClientes">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>30</y>
+        <width>171</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>Buscar</string>
+      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="GestionVentas">
