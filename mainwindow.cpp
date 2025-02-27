@@ -21,14 +21,13 @@ void MainWindow::on_btn_AgregarEmpleado_clicked()
     string ID=ui->tbx_ID->text().toStdString();
     string Nombre=ui->tbx_Nombre->text().toStdString();
     string Departamento=ui->tbx_Departamento->text().toStdString();
-    string Puesto=ui->tbx_Puesto->text().toStdString();
+    string Puesto=ui->cb_Puesto->currentText().toStdString();
     string Contrasena=AdminEmpleados.EncriptarContrasena(ui->tbx_Contrasena->text().toStdString());
     double Salario=ui->tbx_Salario->text().toDouble();
     AdminEmpleados.AgregarEmpleado(Empleado(ID,Nombre,Departamento,Puesto,Contrasena,Salario));
     ui->tbx_ID->setText("");
     ui->tbx_Nombre->setText("");
     ui->tbx_Departamento->setText("");
-    ui->tbx_Puesto->setText("");
     ui->tbx_Salario->setText("");
     ui->tbx_Contrasena->setText("");
     ReloadTable();
@@ -49,6 +48,20 @@ void MainWindow::ReloadTable()
        ui->tbl_Output->setItem(i,4,new QTableWidgetItem(QString::number(AdminEmpleados.Empleados[i].Salario)));
        ui->tbl_Output->setItem(i,5,new QTableWidgetItem(QString::fromStdString(AdminEmpleados.Empleados[i].Activo ? "Activo" : "De baja en la Empresa")));
        ui->tbl_Output->setItem(i,6,new QTableWidgetItem(QString::fromStdString(AdminEmpleados.Empleados[i].Contrasena)));
+    }
+}
+
+void MainWindow::ActualizarTablaClientes()
+{
+    ui->tbl_Clientes->clear();
+    ui->tbl_Clientes->setColumnCount(3);
+    ui->tbl_Clientes->setHorizontalHeaderLabels(QStringList()<<"ID"<<"Nombre"<<"Empresa");
+    ui->tbl_Clientes->setRowCount(AdministradorInventario.Clientes.size());
+    for(uint i=0;i<AdministradorInventario.Clientes.size();i++)
+    {
+       ui->tbl_Clientes->setItem(i,0,new QTableWidgetItem(QString::fromStdString(AdministradorInventario.Clientes[i].IDCliente)));
+       ui->tbl_Clientes->setItem(i,1,new QTableWidgetItem(QString::fromStdString(AdministradorInventario.Clientes[i].Nombre)));
+       ui->tbl_Clientes->setItem(i,2,new QTableWidgetItem(QString::fromStdString(AdministradorInventario.Clientes[i].Empresa)));
     }
 }
 
@@ -73,12 +86,12 @@ void MainWindow::on_btn_Reporte_clicked()
 
 void MainWindow::on_GestionE_PB_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(2);
+    ui->stackedWidget->setCurrentIndex(3);
 }
 
 void MainWindow::on_GestionI_PB_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(3);
+    ui->stackedWidget->setCurrentIndex(4);
 }
 
 void MainWindow::on_BackEmpleados_clicked()
@@ -89,7 +102,9 @@ void MainWindow::on_BackEmpleados_clicked()
 
 void MainWindow::on_GestionC_PB_clicked()
 {
-     ui->stackedWidget->setCurrentIndex(3);
+    AdministradorInventario.CargarClientes();
+    ActualizarTablaClientes();
+    ui->stackedWidget->setCurrentIndex(5);
 }
 
 
@@ -153,6 +168,7 @@ void MainWindow::on_pushButton_clicked()
 
     string ID = ui->lineEdit_4->text().toStdString();
     string Contrasena = AdminEmpleados.EncriptarContrasena(ui->lineEdit_6->text().toStdString());
+    string Puesto ="";
 
     if(ID.empty() || Contrasena.empty()){
         QMessageBox::warning(this, "Advertencia", "Porfavor, ingrese tanto el ID como su Contrasena");
@@ -164,11 +180,26 @@ void MainWindow::on_pushButton_clicked()
     {
         if(ID==AdminEmpleados.Empleados[i].ID && Contrasena==AdminEmpleados.Empleados[i].Contrasena)
         {
-
+            Puesto=AdminEmpleados.Empleados[i].Puesto;
            Autorizado=true;
         }
     }
-    Autorizado?QMessageBox::information(this, "Exito", "Usuario Correcto"):QMessageBox::warning(this, "Advertencia", "Usuario o Contrasena incorrectos");
+    if(!Autorizado)
+    {
+      QMessageBox::warning(this, "Advertencia", "Usuario o Contrasena incorrectos");
+    }
+    else
+    {
+        QMessageBox::information(this, "Exito", "Usuario Correcto");
+        if(Puesto=="Administrador")
+        {
+            ui->stackedWidget->setCurrentIndex(1);
+        }
+        else
+        {
+            QMessageBox::warning(this, "Advertencia", "No se ha encontrado un perfil para su puesto.");
+        }
+    }
 
 }
 
@@ -230,5 +261,20 @@ void MainWindow::on_pushButton_2_clicked()
             QMessageBox::critical(this, "Acceso Denegado", "La contraseña ingresada es incorrecta.");
         }
 
+}
+
+
+void MainWindow::on_btn_AgregarCliente_clicked()
+{
+    string IDCliente = ui->tbx_IDCliente->text().toStdString();
+    string Nombre = ui->tbx_NombreCliente->text().toStdString();
+    string Empresa = ui->tbx_EmpresaCliente->text().toStdString();
+    Cliente temp = Cliente(IDCliente,Nombre,Empresa);
+    AdministradorInventario.Clientes.push_back(temp);
+    ActualizarTablaClientes();
+    AdministradorInventario.GuardarClientes();
+    ui->tbx_IDCliente->setText("");
+    ui->tbx_NombreCliente->setText("");
+    ui->tbx_EmpresaCliente->setText("");
 }
 

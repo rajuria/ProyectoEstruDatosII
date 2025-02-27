@@ -3,9 +3,11 @@
 
 #include <QMainWindow>
 #include "AdministradorEmpleados.h"
-#include "AdminClientes.h"
 #include "AdminInventario.h"
 #include <QMessageBox>
+#include <iostream>
+
+using namespace std;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -61,11 +63,13 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void on_btn_AgregarCliente_clicked();
+
 private:
     Ui::MainWindow *ui;
     AdministradorEmpleados AdminEmpleados;
     AdminInventario AdministradorInventario;
-    AdminClientes clientes;
     void ReloadTable();
+    void ActualizarTablaClientes();
 };
 #endif // MAINWINDOW_H
