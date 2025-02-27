@@ -22,21 +22,23 @@ void MainWindow::on_btn_AgregarEmpleado_clicked()
     string Nombre=ui->tbx_Nombre->text().toStdString();
     string Departamento=ui->tbx_Departamento->text().toStdString();
     string Puesto=ui->tbx_Puesto->text().toStdString();
+    string Contrasena=AdminEmpleados.EncriptarContrasena(ui->tbx_Contrasena->text().toStdString());
     double Salario=ui->tbx_Salario->text().toDouble();
-    AdminEmpleados.AgregarEmpleado(Empleado(ID,Nombre,Departamento,Puesto,Salario));
-    ui->tbx_ID->text()="";;
-    ui->tbx_Nombre->text()="";
-    ui->tbx_Departamento->text()="";
-    ui->tbx_Puesto->text()="";
-    ui->tbx_Salario->text()="";
+    AdminEmpleados.AgregarEmpleado(Empleado(ID,Nombre,Departamento,Puesto,Contrasena,Salario));
+    ui->tbx_ID->setText("");
+    ui->tbx_Nombre->setText("");
+    ui->tbx_Departamento->setText("");
+    ui->tbx_Puesto->setText("");
+    ui->tbx_Salario->setText("");
+    ui->tbx_Contrasena->setText("");
     ReloadTable();
 }
 
 void MainWindow::ReloadTable()
 {
     ui->tbl_Output->clear();
-    ui->tbl_Output->setColumnCount(6);
-    ui->tbl_Output->setHorizontalHeaderLabels(QStringList()<<"ID"<<"Nombre"<<"Departamento"<<"Puesto"<<"Salario"<<"Estado");
+    ui->tbl_Output->setColumnCount(7);
+    ui->tbl_Output->setHorizontalHeaderLabels(QStringList()<<"ID"<<"Nombre"<<"Departamento"<<"Puesto"<<"Salario"<<"Estado"<<"Contrasena");
     ui->tbl_Output->setRowCount(AdminEmpleados.Empleados.size());
     for(uint i=0;i<AdminEmpleados.Empleados.size();i++)
     {
@@ -46,6 +48,7 @@ void MainWindow::ReloadTable()
        ui->tbl_Output->setItem(i,3,new QTableWidgetItem(QString::fromStdString(AdminEmpleados.Empleados[i].Puesto)));
        ui->tbl_Output->setItem(i,4,new QTableWidgetItem(QString::number(AdminEmpleados.Empleados[i].Salario)));
        ui->tbl_Output->setItem(i,5,new QTableWidgetItem(QString::fromStdString(AdminEmpleados.Empleados[i].Activo ? "Activo" : "De baja en la Empresa")));
+       ui->tbl_Output->setItem(i,6,new QTableWidgetItem(QString::fromStdString(AdminEmpleados.Empleados[i].Contrasena)));
     }
 }
 
@@ -148,46 +151,24 @@ void MainWindow::on_PB_Salir_clicked()
 void MainWindow::on_pushButton_clicked()
 {
 
-    string Name = ui->lineEdit_4->text().toStdString();
-    string ID = ui->lineEdit_6->text().toStdString();
-    QString employeeS = ui->comboBoxTE->currentText();
+    string ID = ui->lineEdit_4->text().toStdString();
+    string Contrasena = AdminEmpleados.EncriptarContrasena(ui->lineEdit_6->text().toStdString());
 
-    if(Name.empty() || ID.empty()){
-        QMessageBox::warning(this, "Advertencia", "Porfavor, ingrese tanto el nombre como el ID.");
+    if(ID.empty() || Contrasena.empty()){
+        QMessageBox::warning(this, "Advertencia", "Porfavor, ingrese tanto el ID como su Contrasena");
         return;
     }
+    AdminEmpleados.CargarDatos();
+    bool Autorizado=false;
+    for(uint i =0; i<AdminEmpleados.Empleados.size();i++)
+    {
+        if(ID==AdminEmpleados.Empleados[i].ID && Contrasena==AdminEmpleados.Empleados[i].Contrasena)
+        {
 
-    if(employeeS.isEmpty() || employeeS == "Seleccione un empleado..."){
-        QMessageBox::warning(this, "Advertencia", "Porfavor, seleccione un tipo de empleado.");
-        return;
-    }
-
-    string employeeStr = employeeS.toStdString();
-    bool encontrado = false;
-
-    for (const auto& emp: AdminEmpleados.Empleados){
-        if(emp.ID == ID && emp.Nombre == Name && emp.Activo){
-            if(emp.Puesto == employeeStr){
-                encontrado = true;
-                employeeFound = emp.Puesto;
-                break;
-            }
+           Autorizado=true;
         }
     }
-
-    if(!encontrado){
-        QMessageBox::critical(this, "Error!!", "No se encontro ningun usuario activo con los datos ingresados.");
-        return;
-    }
-
-    if(employeeFound == "Gerente" || employeeFound == "gerente"){
-        ui->stackedWidget->setCurrentIndex(1);
-    }else if(employeeFound == "Comprador" || employeeFound == "comprador"){
-        ui->stackedWidget->setCurrentIndex(7);
-    }else if(employeeFound == "Vendedor" || employeeFound == "vendedor"){
-        ui->stackedWidget->setCurrentIndex(2);
-    }
-
+    Autorizado?QMessageBox::information(this, "Exito", "Usuario Correcto"):QMessageBox::warning(this, "Advertencia", "Usuario o Contrasena incorrectos");
 
 }
 

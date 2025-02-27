@@ -1349,7 +1349,7 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>Ingrese su nombre:</string>
+         <string>Ingrese su ID:</string>
         </property>
         <property name="frame">
          <bool>false</bool>
@@ -1381,7 +1381,7 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>Ingrese su ID:</string>
+         <string>Ingrese su Contrasena:</string>
         </property>
         <property name="frame">
          <bool>false</bool>
@@ -2287,6 +2287,25 @@
        <bool>true</bool>
       </property>
      </widget>
+     <widget class="QLineEdit" name="tbx_Contrasena">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>80</y>
+        <width>113</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="toolTipDuration">
+       <number>-1</number>
+      </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
+      <property name="placeholderText">
+       <string>Contrasena</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="GestionInventario">
      <widget class="QPushButton" name="BackInventario">
@@ -2545,7 +2564,7 @@
      <x>0</x>
      <y>0</y>
      <width>802</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>

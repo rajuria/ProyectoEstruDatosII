@@ -29,7 +29,6 @@ struct Producto{
 class AdminInventario {
 public:
     vector<Producto> products;
-
     void addProduct(Producto newProduct);
     void updateInventory(string productID, int cantidad);
     Producto* searchProduct(const string* productID);
