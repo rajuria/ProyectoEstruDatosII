@@ -50,6 +50,14 @@ struct Venta
     vector<Producto>ProductosVendidos;
     Cliente IDCliente;
     string Vendedor;
+
+    Venta(string IDVenta, vector<Producto> ProductosVendidos, Cliente IDCliente, string Vendedor)
+    {
+        this->IDVenta=IDVenta;
+        this->ProductosVendidos=ProductosVendidos;
+        this->IDCliente=IDCliente;
+        this->Vendedor=Vendedor;
+    }
 };
 
 class AdminInventario {
