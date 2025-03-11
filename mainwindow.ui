@@ -998,7 +998,7 @@
      <number>0</number>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QLineEdit" name="Title_2">
@@ -2251,7 +2251,7 @@
        <string>Lista de Empleados:</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="btn_AgregarEmpleado_2">
+     <widget class="QPushButton" name="btn_BuscarEmpleado">
       <property name="geometry">
        <rect>
         <x>200</x>

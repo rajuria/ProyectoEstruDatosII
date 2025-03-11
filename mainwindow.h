@@ -65,6 +65,8 @@ private slots:
 
     void on_btn_AgregarCliente_clicked();
 
+    void on_btn_BuscarEmpleado_clicked();
+
 private:
     Ui::MainWindow *ui;
     AdministradorEmpleados AdminEmpleados;

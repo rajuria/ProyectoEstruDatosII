@@ -295,3 +295,9 @@ void MainWindow::on_btn_AgregarCliente_clicked()
     ui->tbx_EmpresaCliente->setText("");
 }
 
+
+void MainWindow::on_btn_BuscarEmpleado_clicked()
+{
+
+}
+
