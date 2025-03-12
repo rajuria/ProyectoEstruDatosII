@@ -66,7 +66,6 @@ void MainWindow::ActualizarTablaClientes()
     }
 }
 
-
 void MainWindow::on_btn_Guardar_clicked()
 {
     AdminEmpleados.GuardarDatos();
@@ -298,9 +297,13 @@ void MainWindow::on_btn_AgregarCliente_clicked()
 
 void MainWindow::on_btn_BuscarEmpleado_clicked()
 {
-    string employee = ui->tbx_BuscarEmpleado->text().toStdString();
-    string id = ui->tbx_ID->text().toStdString();
-    AdminEmpleados.ObtenerEmpleado(id, employee);
+    string id = ui->tbx_BuscarEmpleado->text().toStdString();
+    std::cerr << "ID a buscar: " << id;
+    if(AdminEmpleados.buscarEmpleado(ui->tbl_Output, id)){
+       QMessageBox::information(this, "Busqueda", "Empleado encontrado con exito!");
+    } else {
+       QMessageBox::warning(this, "Busqueda", "Empleado no encontrado.");
+    }
 
 }
 
@@ -309,4 +312,5 @@ void MainWindow::on_pB_SchInventory_clicked()
 {
     string Producto = ui->tbx_BuscarProductoEnInventario->text().toStdString();
 }
+
 

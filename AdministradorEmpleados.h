@@ -179,7 +179,18 @@ inline string AdministradorEmpleados::ObtenerEmpleado(const std::string &ID, con
 
 inline bool AdministradorEmpleados::buscarEmpleado(QTableWidget *tabla, const std::string &id)
 {
-
+    for(int fila = 0; fila < tabla->rowCount(); fila++){
+        QTableWidgetItem* item = tabla->item(fila, 0);
+        if(item){
+            string idTabla = item->text().trimmed().toStdString();
+            std::cerr << "Comparando: " << idTabla << "con" << id;
+            if(idTabla == id){
+                tabla->selectRow(fila);
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 #endif // ADMINISTRADOREMPLEADOS_H

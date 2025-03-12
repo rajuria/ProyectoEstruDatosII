@@ -991,6 +991,9 @@
       </disabled>
      </palette>
     </property>
+    <property name="toolTipDuration">
+     <number>-3</number>
+    </property>
     <property name="frameShadow">
      <enum>QFrame::Plain</enum>
     </property>
@@ -2204,10 +2207,10 @@
        </rect>
       </property>
       <property name="currentIndex">
-       <number>-1</number>
+       <number>0</number>
       </property>
       <property name="placeholderText">
-       <string>Puesto</string>
+       <string notr="true"/>
       </property>
       <item>
        <property name="text">
