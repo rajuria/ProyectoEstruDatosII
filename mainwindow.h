@@ -67,6 +67,8 @@ private slots:
 
     void on_btn_BuscarEmpleado_clicked();
 
+    void on_pB_SchInventory_clicked();
+
 private:
     Ui::MainWindow *ui;
     AdministradorEmpleados AdminEmpleados;

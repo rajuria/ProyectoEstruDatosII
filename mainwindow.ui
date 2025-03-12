@@ -998,7 +998,7 @@
      <number>0</number>
     </property>
     <property name="currentIndex">
-     <number>6</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QLineEdit" name="Title_2">
@@ -2248,7 +2248,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Lista de Empleados:</string>
+       <string>Empleados por ID</string>
       </property>
      </widget>
      <widget class="QPushButton" name="btn_BuscarEmpleado">
@@ -2308,7 +2308,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Productos en Inventario</string>
+       <string>Productos en Inventario por ID</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="tbx_ID_2">
@@ -2368,7 +2368,7 @@
        <rect>
         <x>230</x>
         <y>120</y>
-        <width>131</width>
+        <width>151</width>
         <height>21</height>
        </rect>
       </property>
@@ -2535,6 +2535,19 @@
       </property>
       <property name="readOnly">
        <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pB_SchInventory">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>200</y>
+        <width>80</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Buscar</string>
       </property>
      </widget>
     </widget>

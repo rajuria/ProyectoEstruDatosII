@@ -8,6 +8,7 @@
 #include <fstream>
 #include <sstream>
 #include <QString>
+#include <QTableWidget>
 
 using std::string;
 using std::vector;
@@ -46,6 +47,7 @@ public:
     void AgregarEmpleado(Empleado EmpleadoNuevo);
     string EncriptarContrasena(string Contrasena);
     string ObtenerEmpleado(const string& ID, const string& nombre);
+    bool buscarEmpleado(QTableWidget* tabla, const string& id);
 
 };
 
@@ -173,6 +175,11 @@ inline string AdministradorEmpleados::ObtenerEmpleado(const std::string &ID, con
         }
     }
     return "";
+}
+
+inline bool AdministradorEmpleados::buscarEmpleado(QTableWidget *tabla, const std::string &id)
+{
+
 }
 
 #endif // ADMINISTRADOREMPLEADOS_H

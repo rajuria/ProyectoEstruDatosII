@@ -63,25 +63,26 @@ struct Venta
 class AdminInventario {
 public:
     vector<Producto> products;
-    vector<Cliente> Clientes;
     void addProduct(Producto newProduct);
     void updateInventory(string productID, int cantidad);
     Producto* searchProduct(const string* productID);
-    void deleteProduct(const string* productID);
     void createReport(const string& filename = "Inventario.csv") const;
     void GuardarDatos(const string& filename= "Inventario.a");
     void CargarDatos(const string& filename= "Inventario.a");
     void LowStockAlert(int minimum = 5) const;
 
+    vector<Cliente> Clientes;
     void GuardarClientes(const string& filename= "Clientes.a");
     void CargarClientes(const string& filename= "Clientes.a");
 };
 
+//Funcion inventario
 inline void AdminInventario::addProduct(Producto newProduct)
 {
     products.push_back(newProduct);
 }
 
+//Funcion inventario
 inline void AdminInventario::updateInventory(std::string productID, int cantidad)
 {
     Producto *product= searchProduct(&productID);
@@ -94,6 +95,7 @@ inline void AdminInventario::updateInventory(std::string productID, int cantidad
 
 }
 
+//Funcion inventario
 inline Producto* AdminInventario::searchProduct(const std::string *productID)
 {
     for(auto& p : products){
@@ -104,11 +106,7 @@ inline Producto* AdminInventario::searchProduct(const std::string *productID)
     return nullptr;
 }
 
-inline void AdminInventario::deleteProduct(const std::string *productID)
-{
-    // ... PENDIENDTE ...
-}
-
+//Funcion inventario
 inline void AdminInventario::createReport(const std::string &filename) const
 {
     std::fstream file(filename);
@@ -125,6 +123,7 @@ inline void AdminInventario::createReport(const std::string &filename) const
     std::cout<< "Reporte de inventario generado con exito. \n";
 }
 
+//Funcion inventario
 inline void AdminInventario::GuardarDatos(const std::string &filename)
 {
     HANDLE file = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -150,6 +149,7 @@ inline void AdminInventario::GuardarDatos(const std::string &filename)
     CloseHandle(file);
 }
 
+//Funcion inventario
 inline void AdminInventario::CargarDatos(const std::string &filename)
 {
     HANDLE file = CreateFileA(filename.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -180,6 +180,7 @@ inline void AdminInventario::CargarDatos(const std::string &filename)
     CloseHandle(file);
 }
 
+//Funcion inventario
 inline void AdminInventario::LowStockAlert(int minimum) const
 {
     std::cout << "Productos con bajo stock (menos de " << minimum << "unidades): \n";
@@ -195,6 +196,7 @@ inline void AdminInventario::LowStockAlert(int minimum) const
     }
 }
 
+//Funcion clientes
 inline void AdminInventario::GuardarClientes(const std::string &filename)
 {
     HANDLE file = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -222,6 +224,7 @@ inline void AdminInventario::GuardarClientes(const std::string &filename)
     CloseHandle(file);
 }
 
+//Funcion clientes
 inline void AdminInventario::CargarClientes(const std::string &filename)
 {
     HANDLE file = CreateFileA(filename.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);

@@ -298,6 +298,15 @@ void MainWindow::on_btn_AgregarCliente_clicked()
 
 void MainWindow::on_btn_BuscarEmpleado_clicked()
 {
+    string employee = ui->tbx_BuscarEmpleado->text().toStdString();
+    string id = ui->tbx_ID->text().toStdString();
+    AdminEmpleados.ObtenerEmpleado(id, employee);
 
+}
+
+
+void MainWindow::on_pB_SchInventory_clicked()
+{
+    string Producto = ui->tbx_BuscarProductoEnInventario->text().toStdString();
 }
 
