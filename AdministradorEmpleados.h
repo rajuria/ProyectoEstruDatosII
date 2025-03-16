@@ -48,6 +48,7 @@ public:
     string EncriptarContrasena(string Contrasena);
     string ObtenerEmpleado(const string& ID, const string& nombre);
     bool buscarEmpleado(QTableWidget* tabla, const string& id);
+    void ImportarCSV(const string& archivoCSV="Empleados.csv");
 
 };
 
@@ -192,5 +193,62 @@ inline bool AdministradorEmpleados::buscarEmpleado(QTableWidget *tabla, const st
     }
     return false;
 }
+
+inline void AdministradorEmpleados::ImportarCSV(const std::string &archivoCSV)
+{
+    std::ifstream archivo(archivoCSV);
+
+    if (!archivo.is_open())
+    {
+        std::cerr << "No se pudo abrir el archivo CSV." << std::endl;
+        return;
+    }
+
+    std::string linea;
+    // Leer la primera línea (encabezados) y descartarla
+    std::getline(archivo, linea);
+
+    while (std::getline(archivo, linea))
+    {
+        std::istringstream ss(linea);
+        std::string elemento;
+
+        Empleado empleado;
+
+        // ID
+        std::getline(ss, elemento, ',');
+        empleado.ID = elemento;
+
+        // Nombre
+        std::getline(ss, elemento, ',');
+        empleado.Nombre = elemento;
+
+        // Departamento
+        std::getline(ss, elemento, ',');
+        empleado.Departamento = elemento;
+
+        // Puesto
+        std::getline(ss, elemento, ',');
+        empleado.Puesto = elemento;
+
+        // Contrasena
+        std::getline(ss, elemento, ',');
+        empleado.Contrasena = elemento;
+
+        // Salario
+        std::getline(ss, elemento, ',');
+        empleado.Salario = std::stod(elemento);
+
+        // Activo
+        std::getline(ss, elemento, ',');
+        empleado.Activo = (elemento == "1");
+
+        // Añadir el empleado al vector
+        Empleados.push_back(empleado);
+    }
+
+    archivo.close();
+}
+
 
 #endif // ADMINISTRADOREMPLEADOS_H

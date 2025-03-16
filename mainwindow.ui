@@ -1995,19 +1995,6 @@
        <string>Agregar</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="btn_Guardar">
-      <property name="geometry">
-       <rect>
-        <x>470</x>
-        <y>80</y>
-        <width>80</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Guardar</string>
-      </property>
-     </widget>
      <widget class="QLineEdit" name="tbx_Departamento">
       <property name="geometry">
        <rect>
@@ -2208,9 +2195,6 @@
       </property>
       <property name="currentIndex">
        <number>0</number>
-      </property>
-      <property name="placeholderText">
-       <string notr="true"/>
       </property>
       <item>
        <property name="text">

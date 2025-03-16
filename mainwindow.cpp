@@ -66,15 +66,10 @@ void MainWindow::ActualizarTablaClientes()
     }
 }
 
-void MainWindow::on_btn_Guardar_clicked()
-{
-    AdminEmpleados.GuardarDatos();
-}
-
 
 void MainWindow::on_btn_Cargar_clicked()
 {
-    AdminEmpleados.CargarDatos();
+    AdminEmpleados.ImportarCSV();
     ReloadTable();
 }
 
