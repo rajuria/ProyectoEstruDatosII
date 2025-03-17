@@ -310,3 +310,15 @@ void MainWindow::on_pB_SchInventory_clicked()
 }
 
 
+
+void MainWindow::on_PB_Vender_clicked()
+{
+
+}
+
+
+void MainWindow::on_PB_CrearPedido_clicked()
+{
+
+}
+

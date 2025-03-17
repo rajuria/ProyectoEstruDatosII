@@ -24,7 +24,7 @@ public:
 private slots:
     void on_btn_AgregarEmpleado_clicked();
 
-    void on_btn_Guardar_clicked();
+//    void on_btn_Guardar_clicked();
 
     void on_btn_Cargar_clicked();
 
@@ -68,6 +68,10 @@ private slots:
     void on_btn_BuscarEmpleado_clicked();
 
     void on_pB_SchInventory_clicked();
+
+    void on_PB_Vender_clicked();
+
+    void on_PB_CrearPedido_clicked();
 
 private:
     Ui::MainWindow *ui;

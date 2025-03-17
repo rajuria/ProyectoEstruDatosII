@@ -36,6 +36,103 @@ struct Empleado
     }
 };
 
+class BTreeNode {
+public:
+    bool leaf;
+    vector<Empleado> keys;
+    vector<BTreeNode*> children;
+    BTreeNode(bool leaf){
+        this->leaf = leaf;
+    }
+};
+
+class BTree {
+public:
+    BTreeNode* root;
+    int t;
+    BTree(int t){
+        this->t = t;
+        root = new BTreeNode(true);
+    }
+    void insert(Empleado k);
+    void traverse();
+    Empleado* searchB(string ID);
+private:
+    void insertNonFull(BTreeNode* node, Empleado k);
+    void splitChild(BTreeNode* parent, int i, BTreeNode* child);
+};
+
+inline void BTree::insert(Empleado k)
+{
+    if (static_cast<int>(root->keys.size()) == (2 * t - 1)){
+        BTreeNode* s = new BTreeNode(false);
+        s->children.push_back(root);
+        splitChild(s,0,root);
+        root = s;
+    }
+    insertNonFull(root,k);
+}
+
+inline Empleado *BTree::searchB(std::string ID)
+{
+    BTreeNode* node = root;
+    while (node) {
+        int i = 0;
+        while (i < static_cast<int>(node->keys.size()) && ID > node->keys[i].ID) {
+            i++;
+        }
+        if (i < static_cast<int>(node->keys.size()) && ID == node->keys[i].ID) {
+            return &node->keys[i];
+        }
+        if (node->leaf) {
+            return nullptr;
+        }
+        node = node->children[i];
+    }
+    return nullptr;
+}
+
+inline void BTree::insertNonFull(BTreeNode *node, Empleado k)
+{
+    int i = node->keys.size() - 1;
+    if(node->leaf){
+        node->keys.push_back(k);
+        while(i >=0 && node->keys[i].ID > k.ID){
+            node->keys[i+1] = node->keys[i];
+            i--;
+        }
+        node->keys[i+1] = k;
+    } else {
+        while ( i >= 0 && node->keys[i].ID > k.ID){
+            i--;
+        }
+        i++;
+        if (static_cast<int>(node->children[i]->keys.size()) == (2 * t - 1)){
+            splitChild(node, i, node->children[i]);
+            if(node->keys[i].ID < k.ID){
+                i++;
+            }
+            insertNonFull(node->children[i], k);
+        }
+    }
+}
+
+inline void BTree::splitChild(BTreeNode *parent, int i, BTreeNode *child)
+{
+    BTreeNode* newChild = new BTreeNode(child->leaf);
+    for (int j = 0; j < t - 1; j++) {
+        newChild->keys.push_back(child->keys[j + t]);
+    }
+    if (!child->leaf) {
+        for (int j = 0; j < t; j++) {
+            newChild->children.push_back(child->children[j + t]);
+        }
+    }
+    child->keys.resize(t - 1);
+    parent->children.insert(parent->children.begin() + i + 1, newChild);
+    parent->keys.insert(parent->keys.begin() + i, child->keys[t - 1]);
+}
+
 class AdministradorEmpleados
 {
 public:
