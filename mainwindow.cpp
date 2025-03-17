@@ -176,6 +176,7 @@ void MainWindow::on_PB_Salir_clicked()
 void MainWindow::on_pushButton_clicked()
 {
 
+    std::cout << "Hola mundo"<< std::endl;
     string ID = ui->lineEdit_4->text().toStdString();
     string Contrasena = AdminEmpleados.EncriptarContrasena(ui->lineEdit_6->text().toStdString());
     string Puesto ="";
