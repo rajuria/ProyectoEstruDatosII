@@ -320,3 +320,10 @@ void MainWindow::on_PB_CrearPedido_clicked()
 
 }
 
+
+void MainWindow::on_btn_CargarCliente_clicked()
+{
+    AdministradorInventario.CargarClientes("Clientes.a");
+    ActualizarTablaClientes();
+}
+

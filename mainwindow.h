@@ -73,6 +73,8 @@ private slots:
 
     void on_PB_CrearPedido_clicked();
 
+    void on_btn_CargarCliente_clicked();
+
 private:
     Ui::MainWindow *ui;
     AdministradorEmpleados AdminEmpleados;

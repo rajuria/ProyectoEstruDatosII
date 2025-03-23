@@ -7,6 +7,11 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <QComboBox>
+#include <QTextStream>
+#include <QStringList>
+#include <QDebug>
+#include <QFile>
 
 using std::string;
 using std::vector;
@@ -74,6 +79,7 @@ public:
     vector<Cliente> Clientes;
     void GuardarClientes(const string& filename= "Clientes.a");
     void CargarClientes(const string& filename= "Clientes.a");
+    std::vector<Cliente> ObtenerClientes() const;
 };
 
 //Funcion inventario
@@ -199,62 +205,181 @@ inline void AdminInventario::LowStockAlert(int minimum) const
 //Funcion clientes
 inline void AdminInventario::GuardarClientes(const std::string &filename)
 {
-    HANDLE file = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (file == INVALID_HANDLE_VALUE)
-    {
-        std::cerr << "No se pudo abrir el archivo\n";
-        return;
-    }
-    DWORD written;
-    size_t size = Clientes.size();
-    WriteFile(file, &size, sizeof(size), &written, NULL);
+    // Intenta abrir el archivo para lectura, si no existe, lo creará
+    HANDLE file = CreateFileA(filename.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
-    for (const auto& Cliente : Clientes)
-    {//ForEach que recorre cada elemento dentro del vector de Empleados
-        size_t idSize = Cliente.IDCliente.size();//Lee el tamano del string asignado a la variable.
-        WriteFile(file, &idSize, sizeof(idSize), &written, NULL);//Escribe el tamano del string en el archivo
-        WriteFile(file, Cliente.IDCliente.c_str(), idSize, &written, NULL);//Escribe los datos al archivo
-        size_t nombreSize = Cliente.Nombre.size();
-        WriteFile(file, &nombreSize, sizeof(nombreSize), &written, NULL);
-        WriteFile(file, Cliente.Nombre.c_str(), nombreSize, &written, NULL);
-        size_t empresaSize = Cliente.Empresa.size();
-        WriteFile(file, &empresaSize, sizeof(nombreSize), &written, NULL);
-        WriteFile(file, Cliente.Empresa.c_str(), empresaSize, &written, NULL);
+    if (file == INVALID_HANDLE_VALUE) {
+        // Si el archivo no existe, lo creamos
+        file = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+        if (file == INVALID_HANDLE_VALUE) {
+            std::cerr << "No se pudo abrir o crear el archivo\n";
+            return;
+        }
+
+        // Escribir los nuevos datos si el archivo es creado
+        std::cout << "El archivo fue creado correctamente, guardando los datos...\n";
     }
-    CloseHandle(file);
+
+       std::vector<Cliente> clientesExistentes;
+    if(file != INVALID_HANDLE_VALUE){
+       // Leer los clientes ya guardados en el archivo
+       DWORD read;
+       size_t existingSize;
+       if (ReadFile(file, &existingSize, sizeof(existingSize), &read, NULL))
+       {
+           for (size_t i = 0; i < existingSize; ++i)
+           {
+               Cliente cliente;
+               size_t idSize, nombreSize, empresaSize;
+
+               // Leer IDCliente
+               if (ReadFile(file, &idSize, sizeof(idSize), &read, NULL))
+               {
+                   std::vector<char> idCliente(idSize);
+                   if (ReadFile(file, idCliente.data(), idSize, &read, NULL))
+                   {
+                       cliente.IDCliente = std::string(idCliente.begin(), idCliente.end());
+                   }
+               }
+
+               // Leer Nombre
+               if (ReadFile(file, &nombreSize, sizeof(nombreSize), &read, NULL))
+               {
+                   std::vector<char> nombre(nombreSize);
+                   if (ReadFile(file, nombre.data(), nombreSize, &read, NULL))
+                   {
+                       cliente.Nombre = std::string(nombre.begin(), nombre.end());
+                   }
+               }
+
+               // Leer Empresa
+               if (ReadFile(file, &empresaSize, sizeof(empresaSize), &read, NULL))
+               {
+                   std::vector<char> empresa(empresaSize);
+                   if (ReadFile(file, empresa.data(), empresaSize, &read, NULL))
+                   {
+                       cliente.Empresa = std::string(empresa.begin(), empresa.end());
+                   }
+               }
+
+               clientesExistentes.push_back(cliente);
+           }
+       }
+    }
+
+   // Cerrar el archivo después de leer
+   CloseHandle(file);
+
+   // Abrir el archivo en modo escritura para sobrescribir con los datos completos
+   file = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+   if (file == INVALID_HANDLE_VALUE)
+   {
+       std::cerr << "No se pudo abrir el archivo para escritura\n";
+       return;
+   }
+
+   // Combinar los clientes existentes con los nuevos
+   clientesExistentes.insert(clientesExistentes.end(), Clientes.begin(), Clientes.end());
+
+   // Escribir los nuevos clientes en el archivo
+   size_t totalClientes = clientesExistentes.size();
+   DWORD written;
+   WriteFile(file, &totalClientes, sizeof(totalClientes), &written, NULL);
+
+   for (const auto& cliente : clientesExistentes)
+   {
+       size_t idSize = cliente.IDCliente.size();
+       WriteFile(file, &idSize, sizeof(idSize), &written, NULL);
+       WriteFile(file, cliente.IDCliente.c_str(), idSize, &written, NULL);
+
+       size_t nombreSize = cliente.Nombre.size();
+       WriteFile(file, &nombreSize, sizeof(nombreSize), &written, NULL);
+       WriteFile(file, cliente.Nombre.c_str(), nombreSize, &written, NULL);
+
+       size_t empresaSize = cliente.Empresa.size();
+       WriteFile(file, &empresaSize, sizeof(empresaSize), &written, NULL);
+       WriteFile(file, cliente.Empresa.c_str(), empresaSize, &written, NULL);
+   }
+
+   CloseHandle(file);
 }
 
 //Funcion clientes
 inline void AdminInventario::CargarClientes(const std::string &filename)
 {
-    HANDLE file = CreateFileA(filename.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (file == INVALID_HANDLE_VALUE) {
-        std::cerr << "Error al abrir el archivo\n";
-        return;
-    }
+    // Abrir el archivo
+   HANDLE file = CreateFileA(filename.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+   if (file == INVALID_HANDLE_VALUE) {
+       // Si no puede abrirse el archivo porque no existe o tiene problemas, lo crea
+       file = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+       if (file == INVALID_HANDLE_VALUE) {
+           std::cerr << "No se pudo crear o abrir el archivo\n";
+           return;
+       }
+       // El archivo está vacío, puedes escribir los datos nuevos directamente
+       std::cout << "El archivo estaba vacío. Procediendo a crear nuevos datos...\n";
+       size_t size = Clientes.size();
+       WriteFile(file, &size, sizeof(size), NULL, NULL);
 
-    DWORD read;
-    size_t size;
-    ReadFile(file, &size, sizeof(size), &read, NULL);
+       for (const Cliente& cliente : Clientes) {
+           size_t idSize = cliente.IDCliente.size();
+           size_t nombreSize = cliente.Nombre.size();
+           size_t empresaSize = cliente.Empresa.size();
 
-    Clientes.resize(size);
-    for (auto& Cliente : Clientes)
-    {
-        size_t idSize;
-        ReadFile(file, &idSize, sizeof(idSize), &read, NULL);
-        Cliente.IDCliente.resize(idSize);
-        ReadFile(file, &Cliente.IDCliente[0], idSize, &read, NULL);
-        size_t nombreSize;
-        ReadFile(file, &nombreSize, sizeof(nombreSize), &read, NULL);
-        Cliente.Nombre.resize(nombreSize);
-        ReadFile(file, &Cliente.Nombre[0], nombreSize, &read, NULL);
-        size_t empresaSize;
-        ReadFile(file, &empresaSize, sizeof(empresaSize), &read, NULL);
-        Cliente.Empresa.resize(empresaSize);
-        ReadFile(file, &Cliente.Empresa[0], empresaSize, &read, NULL);
-    }
+           WriteFile(file, &idSize, sizeof(idSize), NULL, NULL);
+           WriteFile(file, cliente.IDCliente.c_str(), idSize, NULL, NULL);
 
-    CloseHandle(file);
+           WriteFile(file, &nombreSize, sizeof(nombreSize), NULL, NULL);
+           WriteFile(file, cliente.Nombre.c_str(), nombreSize, NULL, NULL);
+
+           WriteFile(file, &empresaSize, sizeof(empresaSize), NULL, NULL);
+           WriteFile(file, cliente.Empresa.c_str(), empresaSize, NULL, NULL);
+       }
+
+       CloseHandle(file);
+       return;
+   }
+
+   DWORD read;
+   size_t size;
+   ReadFile(file, &size, sizeof(size), &read, NULL);
+
+   if (size == 0) {
+       std::cerr << "El archivo está vacío.\n";
+       CloseHandle(file);
+       return; // Salimos si no hay datos
+   }
+
+   // Vaciamos la lista de clientes antes de cargar los datos
+   Clientes.clear();
+
+   // Leer los datos del archivo y cargarlos en la lista
+   for (size_t i = 0; i < size; ++i) {
+       size_t idSize, nombreSize, empresaSize;
+       ReadFile(file, &idSize, sizeof(idSize), &read, NULL);
+       std::string id(idSize, '\0');
+       ReadFile(file, &id[0], idSize, &read, NULL);
+
+       ReadFile(file, &nombreSize, sizeof(nombreSize), &read, NULL);
+       std::string nombre(nombreSize, '\0');
+       ReadFile(file, &nombre[0], nombreSize, &read, NULL);
+
+       ReadFile(file, &empresaSize, sizeof(empresaSize), &read, NULL);
+       std::string empresa(empresaSize, '\0');
+       ReadFile(file, &empresa[0], empresaSize, &read, NULL);
+
+       Cliente nuevoCliente(id, nombre, empresa);
+       Clientes.push_back(nuevoCliente); // Agregar los clientes leídos del archivo
+   }
+
+   CloseHandle(file);
+}
+
+inline std::vector<Cliente> AdminInventario::ObtenerClientes() const
+{
+    return Clientes;
 }
 
 #endif // ADMININVENTARIO_H
