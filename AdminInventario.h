@@ -12,6 +12,8 @@
 #include <QStringList>
 #include <QDebug>
 #include <QFile>
+#include <unordered_map>
+#include "AdministradorEmpleados.h"
 
 using std::string;
 using std::vector;
@@ -28,6 +30,9 @@ struct Producto{
         Nombre = name;
         Precio = price;
         Cantidad = cant;
+    }
+    string getID() const{
+        return ID;
     }
 };
 
@@ -52,16 +57,26 @@ struct Cliente
 struct Venta
 {
     string IDVenta;
-    vector<Producto>ProductosVendidos;
-    Cliente IDCliente;
-    string Vendedor;
+    string fecha;
+    string nombreP;
+    int cant;
+    string IDVendedor;
+    string IDCliente;
+    double subtotal;
+    double total;
+    double impuesto;
 
-    Venta(string IDVenta, vector<Producto> ProductosVendidos, Cliente IDCliente, string Vendedor)
+    Venta(string IDVenta, string fecha, string nombreP, int cant, string IDCliente, string IDVendedor, double PrecioP )
     {
-        this->IDVenta=IDVenta;
-        this->ProductosVendidos=ProductosVendidos;
+        this->IDVenta = IDVenta;
+        this->fecha = fecha;
+        this->cant = cant;
+        this->IDVendedor = IDVendedor;
+        this->nombreP = nombreP;
         this->IDCliente=IDCliente;
-        this->Vendedor=Vendedor;
+        subtotal = cant * PrecioP;
+        impuesto = subtotal * 0.15;
+        total = subtotal + impuesto;
     }
 };
 
@@ -77,9 +92,14 @@ public:
     void LowStockAlert(int minimum = 5) const;
 
     vector<Cliente> Clientes;
+    std::unordered_map<std::string, Cliente> ClientsMap;
     void GuardarClientes(const string& filename= "Clientes.a");
     void CargarClientes(const string& filename= "Clientes.a");
+    Cliente* BuscarClientePorID(const std::string& id);
     std::vector<Cliente> ObtenerClientes() const;
+
+    vector<Venta> ventas;
+
 };
 
 //Funcion inventario
@@ -375,6 +395,20 @@ inline void AdminInventario::CargarClientes(const std::string &filename)
    }
 
    CloseHandle(file);
+
+   ClientsMap.clear();
+   for (const auto& cliente : Clientes) {
+       ClientsMap[cliente.IDCliente] = cliente;
+   }
+}
+
+inline Cliente *AdminInventario::BuscarClientePorID(const std::string &id)
+{
+    auto it = ClientsMap.find(id);
+        if (it != ClientsMap.end()) {
+            return &it->second; // Retorna un puntero al cliente encontrado
+        }
+        return nullptr; // No encontrado
 }
 
 inline std::vector<Cliente> AdminInventario::ObtenerClientes() const

@@ -108,13 +108,13 @@ void MainWindow::on_GestionC_PB_clicked()
 
 void MainWindow::on_GestionV_PB_clicked()
 {
-     ui->stackedWidget->setCurrentIndex(4);
+     ui->stackedWidget->setCurrentIndex(6);
 }
 
 
 void MainWindow::on_GestionP_PB_clicked()
 {
-     ui->stackedWidget->setCurrentIndex(5);
+     ui->stackedWidget->setCurrentIndex(7);
 }
 
 
@@ -255,21 +255,17 @@ void MainWindow::on_btn_GuardarInv_clicked()
 void MainWindow::on_pushButton_2_clicked()
 {
     bool ok;
-        QString password = QInputDialog::getText(this, "Verificar Administrador", "Ingrese la contraseña de administrador:", QLineEdit::Password, "", &ok);
-        if (!ok || password.isEmpty())
-        {
-            QMessageBox::information(this, "Acceso Denegado", "No se ingresó una contraseña.");
-            return;
-        }
-        if(password == "Admin")
-        {
-            QMessageBox::information(this, "Acceso Concedido", "Administrador verificado. Proceda a agregar el cliente.");
-            ui->stackedWidget->setCurrentIndex(3);
-        }
-        else
-        {
-            QMessageBox::critical(this, "Acceso Denegado", "La contraseña ingresada es incorrecta.");
-        }
+    QString password = QInputDialog::getText(this, "Verificar Administrador", "Ingrese la contraseña de administrador:", QLineEdit::Password, "", &ok);
+    if (!ok || password.isEmpty()){
+        QMessageBox::information(this, "Acceso Denegado", "No se ingresó una contraseña.");
+        return;
+    }
+    if(password == "Admin"){
+        QMessageBox::information(this, "Acceso Concedido", "Administrador verificado. Proceda a agregar el cliente.");
+        ui->stackedWidget->setCurrentIndex(3);
+    }else{
+        QMessageBox::critical(this, "Acceso Denegado", "La contraseña ingresada es incorrecta.");
+    }
 
 }
 
@@ -305,6 +301,20 @@ void MainWindow::on_btn_BuscarEmpleado_clicked()
 void MainWindow::on_pB_SchInventory_clicked()
 {
     string Producto = ui->tbx_BuscarProductoEnInventario->text().toStdString();
+
+    if(AdministradorInventario.searchProduct(&Producto)){
+    // Si se encuentra el producto, seleccionar la fila en la tabla
+        for (int i = 0; i < ui->tbl_Inventario->rowCount(); i++) {
+            QString idCelda = ui->tbl_Inventario->item(i, 0)->text();
+            if (idCelda == QString::fromStdString(Producto)) {
+                ui->tbl_Inventario->selectRow(i);
+                break;
+            }
+        }
+    } else {
+        // Si no se encuentra el producto, mostrar un mensaje de error
+        QMessageBox::information(this, "Producto no encontrado", "No se encontró el producto con ID: " + QString::fromStdString(Producto));
+    }
 }
 
 
@@ -325,5 +335,39 @@ void MainWindow::on_btn_CargarCliente_clicked()
 {
     AdministradorInventario.CargarClientes("Clientes.a");
     ActualizarTablaClientes();
+}
+
+
+void MainWindow::on_btn_BuscarCliente_clicked()
+{
+    string idSearched = ui->tbx_BuscarClientes->text().trimmed().toStdString();
+    if(idSearched.empty()){
+        QMessageBox::warning(this, "Búsqueda", "Ingrese un ID para buscar.");
+        return;
+    }
+
+    Cliente* clienteEncontrado = AdministradorInventario.BuscarClientePorID(idSearched);
+    if(!clienteEncontrado){
+        QMessageBox::information(this, "Búsqueda", "Cliente no encontrado.");
+        return;
+    }
+
+    for (int row = 0; row < ui->tbl_Clientes->rowCount(); ++row) {
+        QTableWidgetItem* item = ui->tbl_Clientes->item(row, 0); // Columna 0 = ID
+        if (item && item->text().toStdString() == idSearched) {
+            ui->tbl_Clientes->setCurrentCell(row, 0); // Seleccionar la celda
+            ui->tbl_Clientes->selectRow(row); // Resaltar toda la fila
+            return;
+        }
+    }
+
+    // Si no se encuentra en la tabla
+    QMessageBox::warning(this, "Búsqueda", "Cliente encontrado en la lista, pero no en la tabla.");
+}
+
+
+void MainWindow::on_PB_SaveV_clicked()
+{
+
 }
 
