@@ -100,6 +100,7 @@ public:
 
     vector<Venta> ventas;
 
+
 };
 
 //Funcion inventario

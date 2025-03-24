@@ -77,6 +77,8 @@ private slots:
 
     void on_btn_BuscarCliente_clicked();
 
+    void on_PB_SaveV_clicked();
+
 private:
     Ui::MainWindow *ui;
     AdministradorEmpleados AdminEmpleados;
