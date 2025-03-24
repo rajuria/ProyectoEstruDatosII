@@ -1007,7 +1007,7 @@
      <number>0</number>
     </property>
     <property name="currentIndex">
-     <number>4</number>
+     <number>6</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QLineEdit" name="Title_2">

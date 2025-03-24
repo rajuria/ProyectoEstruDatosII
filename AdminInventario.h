@@ -147,11 +147,13 @@ inline void AdminInventario::updateInventory(std::string productID, int cantidad
 {
     // Buscar el producto por su ID
     for (auto& producto : products) {
-        if (producto.getID() == productID) {
+        std::cout<<producto.getID()<<" - "<<productID<<"\n";
+        if (producto.getNombre() == productID) {
             // Verificar si la cantidad vendida es menor o igual a la cantidad disponible
             if (producto.Cantidad >= cantidad) {
                 producto.Cantidad -= cantidad;  // Restamos la cantidad vendida
                 std::cout << "Inventario actualizado para el producto: " << producto.Nombre << std::endl;
+                GuardarInventario();
                 return;
             } else {
                 std::cerr << "No hay suficiente cantidad en el inventario para este producto." << std::endl;
@@ -159,6 +161,7 @@ inline void AdminInventario::updateInventory(std::string productID, int cantidad
             }
         }
     }
+
     std::cerr << "Producto no encontrado en el inventario." << std::endl;
 }
 
@@ -545,7 +548,7 @@ inline void AdminInventario::GuardarVenta(const Venta &nuevaVenta, const std::st
     WriteFile(file, &nuevaVenta.total, sizeof(nuevaVenta.total), &written, NULL);
 
     // Reducimos la cantidad del producto en el inventario
-    producto->Cantidad -= nuevaVenta.cant;
+    //producto->Cantidad -= nuevaVenta.cant;
 
     CloseHandle(file);
 }

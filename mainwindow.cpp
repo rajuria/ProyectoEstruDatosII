@@ -331,6 +331,7 @@ void MainWindow::on_pB_SchInventory_clicked()
 
 void MainWindow::on_PB_Vender_clicked()
 {
+    AdministradorInventario.CargarDatos();
     // Obtener los datos de la venta desde el UI
         string nombreProducto = ui->Ln_NameP->text().toStdString();
         int cantidadVendida = ui->SP_CantP->value();
@@ -352,7 +353,6 @@ void MainWindow::on_PB_Vender_clicked()
         nuevaVenta.subtotal = subtotal;
         nuevaVenta.impuesto = impuesto;
         nuevaVenta.total = total;
-
         AdministradorInventario.GuardarVenta(nuevaVenta);
 
         AdministradorInventario.updateInventory(nombreProducto, cantidadVendida);
@@ -404,6 +404,7 @@ void MainWindow::on_btn_BuscarCliente_clicked()
 
 void MainWindow::on_PB_SaveV_clicked()
 {
+
     // Verificar si la tabla no está vacía
     if (ui->TW_Listadeventas->rowCount() == 0) {
         QMessageBox::warning(this, "Error", "No hay datos en la tabla para guardar.");
@@ -457,6 +458,7 @@ void MainWindow::on_PB_CargarV_clicked()
 {
     // Limpiar la tabla antes de cargar los datos
         ui->TW_Listadeventas->clearContents();
+        ui->TW_Listadeventas->setColumnCount(9);
         ui->TW_Listadeventas->setHorizontalHeaderLabels(QStringList()<<"ID Venta" << "Fecha" << "Producto" << "Cantidad"
                                                         << "ID Cliente" << "ID Vendedor" << "Subtotal"
                                                         << "Impuesto" << "Total");
