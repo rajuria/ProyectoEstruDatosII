@@ -6,6 +6,7 @@
 #include "AdminInventario.h"
 #include <QMessageBox>
 #include <iostream>
+#include <ctime>
 
 using namespace std;
 
@@ -79,11 +80,14 @@ private slots:
 
     void on_PB_SaveV_clicked();
 
+    void on_PB_CargarV_clicked();
+
 private:
     Ui::MainWindow *ui;
     AdministradorEmpleados AdminEmpleados;
     AdminInventario AdministradorInventario;
     void ReloadTable();
     void ActualizarTablaClientes();
+    string generateIDVenta();
 };
 #endif // MAINWINDOW_H

@@ -1007,7 +1007,7 @@
      <number>0</number>
     </property>
     <property name="currentIndex">
-     <number>6</number>
+     <number>4</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QLineEdit" name="Title_2">
@@ -3145,6 +3145,11 @@
         <height>501</height>
        </rect>
       </property>
+      <column>
+       <property name="text">
+        <string>ID</string>
+       </property>
+      </column>
      </widget>
      <widget class="QLabel" name="label_16">
       <property name="geometry">
@@ -3198,7 +3203,7 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QPushButton" name="PB_SaveV_2">
+     <widget class="QPushButton" name="PB_CargarV">
       <property name="geometry">
        <rect>
         <x>70</x>
