@@ -554,6 +554,47 @@ inline std::vector<Cliente> AdminInventario::ObtenerClientes() const
     return Clientes;
 }
 
+inline void AdminInventario::CargarPedidos(const std::string &filename)
+{
+    HANDLE file = CreateFileA(filename.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (file == INVALID_HANDLE_VALUE) {
+        std::cerr << "Error al abrir el archivo\n";
+        return;
+    }
+
+    DWORD read;
+    size_t size;
+    ReadFile(file, &size, sizeof(size), &read, NULL);
+
+    Pedidos.resize(size);
+    for (auto& Pedido : Pedidos)
+    {
+        size_t idSize;
+        ReadFile(file, &idSize, sizeof(idSize), &read, NULL);
+        Pedido.ID.resize(idSize);
+        ReadFile(file, &Pedido.ID[0], idSize, &read, NULL);
+        size_t IDProductoSize;
+        ReadFile(file, &IDProductoSize, sizeof(IDProductoSize), &read, NULL);
+        Pedido.IDProducto.resize(IDProductoSize);
+        ReadFile(file, &Pedido.IDProducto[0], IDProductoSize, &read, NULL);
+        ReadFile(file, &Pedido.Cantidad, sizeof(Pedido.Cantidad), &read, NULL);
+        size_t IDClienteSize;
+        ReadFile(file, &IDClienteSize, sizeof(IDClienteSize), &read, NULL);
+        Pedido.IDCliente.resize(IDClienteSize);
+        ReadFile(file, &Pedido.IDCliente[0], IDClienteSize, &read, NULL);
+        size_t EstadoSize;
+        ReadFile(file, &EstadoSize, sizeof(EstadoSize), &read, NULL);
+        Pedido.Estado.resize(EstadoSize);
+        ReadFile(file, &Pedido.Estado[0], EstadoSize, &read, NULL);
+        size_t FechaSize;
+        ReadFile(file, &FechaSize, sizeof(FechaSize), &read, NULL);
+        Pedido.FechaDeEntrega.resize(FechaSize);
+        ReadFile(file, &Pedido.FechaDeEntrega[0], FechaSize, &read, NULL);
+    }
+
+    CloseHandle(file);
+}
+
 inline void AdminInventario::GuardarPedidos(const std::string &filename)
 {
     HANDLE file = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
