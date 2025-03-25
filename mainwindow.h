@@ -82,6 +82,8 @@ private slots:
 
     void on_PB_CargarV_clicked();
 
+    void on_PB_BuscarV_clicked();
+
 private:
     Ui::MainWindow *ui;
     AdministradorEmpleados AdminEmpleados;

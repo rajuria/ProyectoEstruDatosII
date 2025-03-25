@@ -14,6 +14,7 @@
 #include <QFile>
 #include <unordered_map>
 #include "AdministradorEmpleados.h"
+#include <QInputDialog>
 
 using std::string;
 using std::vector;
@@ -91,7 +92,7 @@ class AdminInventario {
 public:
     vector<Producto> products;
     void addProduct(Producto newProduct);
-    void updateInventory(string productID, int cantidad);
+    void updateInventory(string productID, int cantidad, QWidget* parent);
     Producto* searchProduct(const string* productID);
     void createReport(const string& filename = "Inventario.csv") const;
     void GuardarDatos(const string& filename= "Inventario.a");
@@ -143,7 +144,7 @@ inline void AdminInventario::addProduct(Producto newProduct)
 }
 
 //Funcion inventario
-inline void AdminInventario::updateInventory(std::string productID, int cantidad)
+inline void AdminInventario::updateInventory(std::string productID, int cantidad, QWidget* parent)
 {
     // Buscar el producto por su ID
     for (auto& producto : products) {
@@ -151,12 +152,51 @@ inline void AdminInventario::updateInventory(std::string productID, int cantidad
         if (producto.getNombre() == productID) {
             // Verificar si la cantidad vendida es menor o igual a la cantidad disponible
             if (producto.Cantidad >= cantidad) {
+                std::cout << producto.Cantidad << " - " << cantidad << std::endl;
                 producto.Cantidad -= cantidad;  // Restamos la cantidad vendida
+                std::cout << producto.Cantidad << std::endl;
+                std::cout << "Inventario actualizado para el producto: " << producto.Nombre << std::endl;
+                // Verificar si el stock llegó a cero
+                if (producto.Cantidad == 0) {
+                    bool ok;
+                    int cantidadAdicional = QInputDialog::getInt(parent, "Añadir Stock", "Cantidad a añadir:", 0, 0, 1000, 1, &ok);
+                    if (ok) {
+                        producto.Cantidad += cantidadAdicional;
+                        std::cout << "Stock añadido para el producto: " << producto.Nombre << std::endl;
+                        GuardarInventario();
+                        return;
+                    } else {
+                        std::cerr << "Operación de añadir stock cancelada." << std::endl;
+                        GuardarInventario(); // Guardar cambios aunque se cancele
+                        return;
+                    }
+                } else if (producto.Cantidad < 0) {
+                  std::cerr << "No hay suficiente cantidad en el inventario para este producto." << std::endl;
+                  producto.Cantidad += cantidad; //Revertir la resta
+                  return;
+                }
+
                 std::cout << "Inventario actualizado para el producto: " << producto.Nombre << std::endl;
                 GuardarInventario();
                 return;
             } else {
                 std::cerr << "No hay suficiente cantidad en el inventario para este producto." << std::endl;
+                // Mostrar InputDialog para solicitar la cantidad a añadir
+                bool ok;
+                int cantidadAdicional = QInputDialog::getInt(parent, "Añadir Stock", "Cantidad a añadir:", 0, 0, 1000, 1, &ok);
+                if (ok) {
+                    producto.Cantidad += cantidadAdicional; // Añadimos la cantidad ingresada
+                    std::cout << "Stock añadido para el producto: " << producto.Nombre << std::endl;
+                    GuardarInventario();
+                    return;
+                } else {
+                    std::cerr << "Operación de añadir stock cancelada." << std::endl;
+                    GuardarInventario(); // Guardar cambios aunque se cancele
+                    return;
+                }
+                std::cout << "Inventario actualizado para el producto: " << producto.Nombre << std::endl;
+                GuardarInventario();
+                return;
                 return;
             }
         }
@@ -496,61 +536,90 @@ inline void AdminInventario::CargarVentas(const std::string &filename)
         return;
     }
 
-    DWORD read;
-    Venta venta;
-    while (ReadFile(file, &venta, sizeof(Venta), &read, NULL) && read > 0) {
-        ventas.push_back(venta);  // Agregar la venta al vector
-    }
+    char buffer[1024];
+    DWORD bytesRead;
+    std::string linea;
 
+    ventas.clear(); // Limpiar el vector antes de cargar nuevos datos
+
+    while (ReadFile(file, buffer, sizeof(buffer), &bytesRead, NULL) && bytesRead > 0) {
+        linea.append(buffer, bytesRead);
+        size_t pos;
+        while ((pos = linea.find('\n')) != std::string::npos) {
+            std::string lineaCompleta = linea.substr(0, pos);
+            linea.erase(0, pos + 1);
+
+            std::stringstream ssLinea(lineaCompleta);
+            std::string valor;
+            std::vector<std::string> valores;
+
+            while (std::getline(ssLinea, valor, ',')) {
+                valores.push_back(valor);
+            }
+
+            if (valores.size() == 9) {
+                try {
+                    Venta venta;
+                    venta.IDVenta = valores[0];
+                    venta.fecha = valores[1];
+                    venta.nombreP = valores[2];
+                    venta.cant = std::stoi(valores[3]);
+                    venta.IDCliente = valores[4];
+                    venta.IDVendedor = valores[5];
+                    venta.subtotal = std::stod(valores[6]);
+                    venta.impuesto = std::stod(valores[7]);
+                    venta.total = std::stod(valores[8]);
+                    ventas.push_back(venta);
+                } catch (const std::invalid_argument& e) {
+                    std::cerr << "Error al convertir cadena a número: " << e.what() << std::endl;
+                }
+            }
+        }
+    }
     CloseHandle(file);
 }
 
 inline void AdminInventario::GuardarVenta(const Venta &nuevaVenta, const std::string &filename)
 {
     Producto* producto = nullptr;
-    for (auto &p : products) {
-        if (p.getNombre() == nuevaVenta.nombreP) {
-            producto = &p;
-            break;
+        for (auto &p : products) {
+            if (p.getNombre() == nuevaVenta.nombreP) {
+                producto = &p;
+                break;
+            }
         }
-    }
 
-    if (!producto) {
-        std::cerr << "Producto no encontrado en inventario\n";
-        return;
-    }
+        if (!producto) {
+            std::cerr << "Producto no encontrado en inventario\n";
+            return;
+        }
 
-    if (producto->Cantidad < nuevaVenta.cant) {
-        std::cerr << "No hay suficiente cantidad en inventario para realizar la venta.\n";
-        return;
-    }
+        if (producto->Cantidad < nuevaVenta.cant) {
+            std::cerr << "No hay suficiente cantidad en inventario para realizar la venta.\n";
+            return;
+        }
 
-    ventas.push_back(nuevaVenta);
+        ventas.push_back(nuevaVenta);
 
-    //Guardar en archivo
-    HANDLE file = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (file == INVALID_HANDLE_VALUE) {
-        std::cerr << "Error al abrir el archivo de ventas\n";
-        return;
-    }
+        // Guardar en archivo como texto delimitado por comas
+        HANDLE file = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+        if (file == INVALID_HANDLE_VALUE) {
+            std::cerr << "Error al abrir el archivo de ventas\n";
+            return;
+        }
 
-    SetFilePointer(file, 0, NULL, FILE_END);  // Aseguramos que la venta se agregue al final del archivo
+        SetFilePointer(file, 0, NULL, FILE_END);
 
-    DWORD written;
-    WriteFile(file, &nuevaVenta.IDVenta, sizeof(nuevaVenta.IDVenta), &written, NULL);
-    WriteFile(file, &nuevaVenta.fecha, sizeof(nuevaVenta.fecha), &written, NULL);
-    WriteFile(file, &nuevaVenta.nombreP, sizeof(nuevaVenta.nombreP), &written, NULL);
-    WriteFile(file, &nuevaVenta.cant, sizeof(nuevaVenta.cant), &written, NULL);
-    WriteFile(file, &nuevaVenta.IDCliente, sizeof(nuevaVenta.IDCliente), &written, NULL);
-    WriteFile(file, &nuevaVenta.IDVendedor, sizeof(nuevaVenta.IDVendedor), &written, NULL);
-    WriteFile(file, &nuevaVenta.subtotal, sizeof(nuevaVenta.subtotal), &written, NULL);
-    WriteFile(file, &nuevaVenta.impuesto, sizeof(nuevaVenta.impuesto), &written, NULL);
-    WriteFile(file, &nuevaVenta.total, sizeof(nuevaVenta.total), &written, NULL);
+        DWORD written;
+        std::stringstream ss;
+        ss << nuevaVenta.IDVenta << "," << nuevaVenta.fecha << "," << nuevaVenta.nombreP << ","
+           << nuevaVenta.cant << "," << nuevaVenta.IDCliente << "," << nuevaVenta.IDVendedor << ","
+           << nuevaVenta.subtotal << "," << nuevaVenta.impuesto << "," << nuevaVenta.total << "\n";
+        std::string linea = ss.str();
 
-    // Reducimos la cantidad del producto en el inventario
-    //producto->Cantidad -= nuevaVenta.cant;
+        WriteFile(file, linea.c_str(), linea.length(), &written, NULL);
 
-    CloseHandle(file);
+        CloseHandle(file);
 }
 
 #endif // ADMININVENTARIO_H
