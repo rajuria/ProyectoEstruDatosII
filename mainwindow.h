@@ -90,6 +90,16 @@ private slots:
 
     void on_PB_Completado_2_clicked();
 
+    void on_btn_DesactivarEmpleado_clicked();
+
+    void on_GestionI_PB_2_clicked();
+
+    void on_GestionV_PB_2_clicked();
+
+    void on_GestionP_PB_2_clicked();
+
+    void on_PB_Salir_2_clicked();
+
 private:
     Ui::MainWindow *ui;
     AdministradorEmpleados AdminEmpleados;
@@ -97,6 +107,7 @@ private:
     void ReloadTable();
     void ActualizarTablaClientes();
     void ActualizarTablaPedidos();
+    void ActualizarTablaVentas();
     string generateIDVenta();
 };
 #endif // MAINWINDOW_H

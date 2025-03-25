@@ -88,6 +88,69 @@ void MainWindow::ActualizarTablaPedidos()
 
 }
 
+void MainWindow::ActualizarTablaVentas()
+{
+    // Borrar todas las filas existentes en la tabla
+    ui->TW_Listadeventas->clearContents();
+    ui->TW_Listadeventas->setRowCount(0);
+    AdministradorInventario.ventas.clear();
+
+    // Inicializar los encabezados de la tabla
+    ui->TW_Listadeventas->setColumnCount(9);
+    ui->TW_Listadeventas->setHorizontalHeaderLabels(QStringList() << "ID Venta" << "Fecha" << "Producto" << "Cantidad"
+                                                    << "ID Cliente" << "ID Vendedor" << "Subtotal"
+                                                    << "Impuesto" << "Total");
+
+    HANDLE file = CreateFileA("Ventas.a", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (file == INVALID_HANDLE_VALUE) {
+        std::cerr << "Error al abrir el archivo de ventas\n";
+        return;
+    }
+
+    char buffer[1024];
+    DWORD bytesRead;
+    std::string linea;
+
+    while (ReadFile(file, buffer, sizeof(buffer), &bytesRead, NULL) && bytesRead > 0) {
+        linea.append(buffer, bytesRead);
+        size_t pos;
+        while ((pos = linea.find('\n')) != std::string::npos) {
+            std::string lineaCompleta = linea.substr(0, pos);
+            linea.erase(0, pos + 1);
+
+            std::stringstream ssLinea(lineaCompleta);
+            std::string valor;
+            std::vector<std::string> valores;
+
+            while (std::getline(ssLinea, valor, ',')) {
+                valores.push_back(valor);
+            }
+
+            if (valores.size() == 9) {
+                int row = ui->TW_Listadeventas->rowCount();
+                ui->TW_Listadeventas->insertRow(row);
+                try {
+                    ui->TW_Listadeventas->setItem(row, 0, new QTableWidgetItem(QString::fromStdString(valores[0])));
+                    ui->TW_Listadeventas->setItem(row, 1, new QTableWidgetItem(QString::fromStdString(valores[1])));
+                    ui->TW_Listadeventas->setItem(row, 2, new QTableWidgetItem(QString::fromStdString(valores[2])));
+                    ui->TW_Listadeventas->setItem(row, 3, new QTableWidgetItem(QString::number(std::stoi(valores[3]))));
+                    ui->TW_Listadeventas->setItem(row, 4, new QTableWidgetItem(QString::fromStdString(valores[4])));
+                    ui->TW_Listadeventas->setItem(row, 5, new QTableWidgetItem(QString::fromStdString(valores[5])));
+                    ui->TW_Listadeventas->setItem(row, 6, new QTableWidgetItem(QString::number(std::stod(valores[6]))));
+                    ui->TW_Listadeventas->setItem(row, 7, new QTableWidgetItem(QString::number(std::stod(valores[7]))));
+                    ui->TW_Listadeventas->setItem(row, 8, new QTableWidgetItem(QString::number(std::stod(valores[8]))));
+
+                    Venta Temp(valores[0],valores[1],valores[2],std::stoi(valores[3]),valores[4],valores[5],std::stod(valores[6])/std::stoi(valores[3]));
+                    AdministradorInventario.ventas.push_back(Temp);
+                } catch (const std::invalid_argument& e) {
+                    std::cerr << "Error al convertir cadena a número: " << e.what() << std::endl;
+                }
+            }
+        }
+    }
+    CloseHandle(file);
+}
+
 string MainWindow::generateIDVenta()
 {
     time_t now = time(0);
@@ -139,7 +202,8 @@ void MainWindow::on_GestionC_PB_clicked()
 
 void MainWindow::on_GestionV_PB_clicked()
 {
-     ui->stackedWidget->setCurrentIndex(6);
+    ActualizarTablaVentas();
+    ui->stackedWidget->setCurrentIndex(6);
 }
 
 
@@ -391,6 +455,7 @@ void MainWindow::on_PB_Vender_clicked()
         AdministradorInventario.GuardarVenta(nuevaVenta);
 
         AdministradorInventario.updateInventory(nombreProducto, cantidadVendida, this);
+        ActualizarTablaVentas();
 
         QMessageBox::information(this, "Venta Realizada", "Venta registrada correctamente.");
 }
@@ -521,61 +586,7 @@ void MainWindow::on_PB_SaveV_clicked()
 
 void MainWindow::on_PB_CargarV_clicked()
 {
-    // Borrar todas las filas existentes en la tabla
-    ui->TW_Listadeventas->clearContents();
-    ui->TW_Listadeventas->setRowCount(0);
-
-    // Inicializar los encabezados de la tabla
-    ui->TW_Listadeventas->setColumnCount(9);
-    ui->TW_Listadeventas->setHorizontalHeaderLabels(QStringList() << "ID Venta" << "Fecha" << "Producto" << "Cantidad"
-                                                    << "ID Cliente" << "ID Vendedor" << "Subtotal"
-                                                    << "Impuesto" << "Total");
-
-    HANDLE file = CreateFileA("Ventas.a", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (file == INVALID_HANDLE_VALUE) {
-        std::cerr << "Error al abrir el archivo de ventas\n";
-        return;
-    }
-
-    char buffer[1024];
-    DWORD bytesRead;
-    std::string linea;
-
-    while (ReadFile(file, buffer, sizeof(buffer), &bytesRead, NULL) && bytesRead > 0) {
-        linea.append(buffer, bytesRead);
-        size_t pos;
-        while ((pos = linea.find('\n')) != std::string::npos) {
-            std::string lineaCompleta = linea.substr(0, pos);
-            linea.erase(0, pos + 1);
-
-            std::stringstream ssLinea(lineaCompleta);
-            std::string valor;
-            std::vector<std::string> valores;
-
-            while (std::getline(ssLinea, valor, ',')) {
-                valores.push_back(valor);
-            }
-
-            if (valores.size() == 9) {
-                int row = ui->TW_Listadeventas->rowCount();
-                ui->TW_Listadeventas->insertRow(row);
-                try {
-                    ui->TW_Listadeventas->setItem(row, 0, new QTableWidgetItem(QString::fromStdString(valores[0])));
-                    ui->TW_Listadeventas->setItem(row, 1, new QTableWidgetItem(QString::fromStdString(valores[1])));
-                    ui->TW_Listadeventas->setItem(row, 2, new QTableWidgetItem(QString::fromStdString(valores[2])));
-                    ui->TW_Listadeventas->setItem(row, 3, new QTableWidgetItem(QString::number(std::stoi(valores[3]))));
-                    ui->TW_Listadeventas->setItem(row, 4, new QTableWidgetItem(QString::fromStdString(valores[4])));
-                    ui->TW_Listadeventas->setItem(row, 5, new QTableWidgetItem(QString::fromStdString(valores[5])));
-                    ui->TW_Listadeventas->setItem(row, 6, new QTableWidgetItem(QString::number(std::stod(valores[6]))));
-                    ui->TW_Listadeventas->setItem(row, 7, new QTableWidgetItem(QString::number(std::stod(valores[7]))));
-                    ui->TW_Listadeventas->setItem(row, 8, new QTableWidgetItem(QString::number(std::stod(valores[8]))));
-                } catch (const std::invalid_argument& e) {
-                    std::cerr << "Error al convertir cadena a número: " << e.what() << std::endl;
-                }
-            }
-        }
-    }
-    CloseHandle(file);
+    ActualizarTablaVentas();
 }
 
 void MainWindow::on_PB_BuscarV_clicked()
@@ -644,5 +655,48 @@ void MainWindow::on_PB_Completado_2_clicked()
            ActualizarTablaPedidos();
         }
     }
+}
+
+
+void MainWindow::on_btn_DesactivarEmpleado_clicked()
+{
+    string ID = ui->tbl_Output->selectedItems().at(0)->text().toStdString();
+    for(int i=0; i<AdminEmpleados.Empleados.size(); i++)
+    {
+        if(ID==AdminEmpleados.Empleados[i].ID)
+        {
+            AdminEmpleados.Empleados[i].Activo=false;
+            AdminEmpleados.GuardarDatos();
+            ReloadTable();
+        }
+    }
+}
+
+
+void MainWindow::on_GestionI_PB_2_clicked()
+{
+    ActualizarProductos();
+    ui->stackedWidget->setCurrentIndex(4);
+}
+
+
+void MainWindow::on_GestionV_PB_2_clicked()
+{
+    ActualizarTablaVentas();
+    ui->stackedWidget->setCurrentIndex(6);
+}
+
+
+void MainWindow::on_GestionP_PB_2_clicked()
+{
+    AdministradorInventario.CargarPedidos();
+    ActualizarTablaPedidos();
+    ui->stackedWidget->setCurrentIndex(7);
+}
+
+
+void MainWindow::on_PB_Salir_2_clicked()
+{
+     ui->stackedWidget->setCurrentIndex(0);
 }
 

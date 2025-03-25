@@ -138,7 +138,7 @@ inline void AdministradorEmpleados::GenerarReporte(const std::string &filename) 
         std::cerr << "Error al abrir el archivo\n";
         return;
     }
-    file << "ID,Nombre,Departamento,Puesto,Salario,Estado\n";
+    file << "Employee ID,Full Legal Name,Departamento,Puesto,Salario,Activo,Contrasena\n";
     for (const auto& Empleado : Empleados)
     {
         file << Empleado.ID << ","
@@ -146,7 +146,8 @@ inline void AdministradorEmpleados::GenerarReporte(const std::string &filename) 
              << Empleado.Departamento << ","
              << Empleado.Puesto << ","
              << Empleado.Salario << ","
-             << (Empleado.Activo ? "Activo" : "De baja en la Empresa") << "\n";
+             << (Empleado.Activo ? "Activo" : "De baja en la Empresa")<<","
+             <<"" << "\n";
     }
 }
 

@@ -2371,6 +2371,22 @@
        <string>Buscar</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="btn_DesactivarEmpleado">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>240</y>
+        <width>141</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="text">
+       <string>Marcar Inactivo</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="GestionInventario">
      <widget class="QPushButton" name="BackInventario">
