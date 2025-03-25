@@ -351,6 +351,7 @@ void MainWindow::on_PB_Vender_clicked()
         double subtotal = cantidadVendida * precioProducto;
         double impuesto = subtotal * 0.15;  // Impuesto del 15%
         double total = subtotal + impuesto;
+
         if(nombreProducto=="" || cantidadVendida == 0 || idCliente == "" || idVendedor == ""){
             QMessageBox::warning(this, "Elemento Vacio", "Debes llenar todas las casillas!");
             return;
@@ -376,6 +377,45 @@ void MainWindow::on_PB_Vender_clicked()
 
 void MainWindow::on_PB_CrearPedido_clicked()
 {
+    AdministradorInventario.CargarDatos();
+    string ID=ui->Ln_IDPedido->text().toStdString();
+    string IDProducto=ui->Ln_NameProduct->text().toStdString();
+    int Cantidad=ui->SP_CantP_3->value();
+    string IDCliente=ui->tbx_ClientePedido->text().toStdString();
+    string FechaDeEntrega =ui->dateTimeEdit_P->date().toString("MM-dd-yyyy").toStdString();
+    bool ProductoValido=false;
+    bool SuficienteProducto=false;
+
+    for(int i=0;i<AdministradorInventario.products.size();i++)
+    {
+        if(AdministradorInventario.products[i].ID==IDProducto)
+        {
+            ProductoValido=true;
+            if(AdministradorInventario.products[i].Cantidad>=Cantidad)
+            {
+                SuficienteProducto=true;
+            }
+        }
+    }
+
+    if(ProductoValido && SuficienteProducto)
+    {
+        Pedido nuevo(ID,IDProducto,Cantidad,IDCliente,FechaDeEntrega);
+        AdministradorInventario.Pedidos.push_back(nuevo);
+
+    }
+    else if(!ProductoValido)
+    {
+        cerr<<"No Existe producto con ese ID";
+    }
+    else if(!SuficienteProducto)
+    {
+        cerr<<"No hay suficiente producto en inventario para ingresar la solicitud.";
+    }
+    else
+    {
+        cerr<<"Error Desconocido...";
+    }
 
 }
 

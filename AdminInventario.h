@@ -58,6 +58,27 @@ struct Cliente
     };
 };
 
+struct Pedido
+{
+    string ID;
+    string IDProducto;
+    int Cantidad;
+    string IDCliente;
+    string Estado;//Pendiente,Completado,Cancelado
+    string FechaDeEntrega;
+
+    Pedido(string ID, string IDProducto, int Cantidad, string IDCliente, string FechaDeEntrega)
+    {
+        this->ID=ID;
+        this->IDProducto=IDProducto;
+        this->Cantidad=Cantidad;
+        this->IDCliente=IDCliente;
+        this->Estado="Pendiente";
+        this->FechaDeEntrega=FechaDeEntrega;
+    }
+};
+
+
 struct Venta
 {
     string IDVenta;
@@ -107,9 +128,14 @@ public:
     Cliente* BuscarClientePorID(const std::string& id);
     std::vector<Cliente> ObtenerClientes() const;
 
+    vector<Pedido> Pedidos;
+    void CargarPedidos(const string& filename = "Pedidos.a");
+    void GuardarPedidos(const string& filename = "Pedidos.a");
+
     vector<Venta> ventas;
     void CargarVentas(const string& filename = "Ventas.a");
     void GuardarVenta(const Venta& nuevaVenta, const string& filename = "Ventas.a");
+    void GenerarReporteDeVentas(const string& filename= "Ventas.csv") const;
     double obtenerPrecioProducto(const string &nombre) const
     {
         for (const auto& producto : products) {
@@ -528,6 +554,39 @@ inline std::vector<Cliente> AdminInventario::ObtenerClientes() const
     return Clientes;
 }
 
+inline void AdminInventario::GuardarPedidos(const std::string &filename)
+{
+    HANDLE file = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (file == INVALID_HANDLE_VALUE)
+    {
+        std::cerr << "No se pudo abrir el archivo\n";
+        return;
+    }
+    DWORD written;
+    size_t size = Pedidos.size();
+    WriteFile(file, &size, sizeof(size), &written, NULL);
+    for (const auto& Pedido : Pedidos)
+    {//ForEach que recorre cada elemento dentro del vector de Empleados
+        size_t idSize = Pedido.ID.size();//Lee el tamano del string asignado a la variable.
+        WriteFile(file, &idSize, sizeof(idSize), &written, NULL);//Escribe el tamano del string en el archivo
+        WriteFile(file, Pedido.ID.c_str(), idSize, &written, NULL);//Escribe los datos al archivo
+        size_t IDProductoSize = Pedido.IDProducto.size();
+        WriteFile(file, &IDProductoSize, sizeof(IDProductoSize), &written, NULL);
+        WriteFile(file, Pedido.IDProducto.c_str(), IDProductoSize, &written, NULL);
+        WriteFile(file, &Pedido.Cantidad, sizeof(Pedido.Cantidad), &written, NULL);
+        size_t IDClienteSize = Pedido.IDCliente.size();
+        WriteFile(file, &IDClienteSize, sizeof(IDClienteSize), &written, NULL);
+        WriteFile(file, Pedido.IDCliente.c_str(), IDClienteSize, &written, NULL);
+        size_t EstadoSize = Pedido.Estado.size();
+        WriteFile(file, &EstadoSize, sizeof(EstadoSize), &written, NULL);
+        WriteFile(file, Pedido.Estado.c_str(), EstadoSize, &written, NULL);
+        size_t FechaSize = Pedido.FechaDeEntrega.size();
+        WriteFile(file, &FechaSize, sizeof(FechaSize), &written, NULL);
+        WriteFile(file, Pedido.FechaDeEntrega.c_str(), FechaSize, &written, NULL);
+    }
+    CloseHandle(file);
+}
+
 inline void AdminInventario::CargarVentas(const std::string &filename)
 {
     HANDLE file = CreateFileA(filename.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -620,6 +679,29 @@ inline void AdminInventario::GuardarVenta(const Venta &nuevaVenta, const std::st
         WriteFile(file, linea.c_str(), linea.length(), &written, NULL);
 
         CloseHandle(file);
+}
+
+inline void AdminInventario::GenerarReporteDeVentas(const std::string &filename) const
+{
+    std::ofstream file(filename);
+    if (!file)
+    {
+        std::cerr << "Error al abrir el archivo\n";
+        return;
+    }
+    file << "ID,Fecha,Producto,Cantidad,Vendedor,Cliente,SubTotal,Impuestos,Total\n";
+    for (const auto& Venta : ventas)
+    {
+        file << Venta.IDVenta << ","
+             << Venta.fecha << ","
+             << Venta.nombreP << ","
+             << Venta.cant << ","
+             << Venta.IDVendedor << ","
+             << Venta.IDCliente << ","
+             << Venta.subtotal << ","
+             << Venta.impuesto << ","
+             << Venta.total << "\n";
+    }
 }
 
 #endif // ADMININVENTARIO_H

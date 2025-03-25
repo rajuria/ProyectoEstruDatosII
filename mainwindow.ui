@@ -1007,7 +1007,7 @@
      <number>0</number>
     </property>
     <property name="currentIndex">
-     <number>6</number>
+     <number>7</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QLineEdit" name="Title_2">
@@ -3326,7 +3326,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Nombre del producto</string>
+       <string>ID del producto</string>
       </property>
      </widget>
      <widget class="QPushButton" name="PB_CrearPedido">
@@ -3364,19 +3364,6 @@
         <x>20</x>
         <y>80</y>
         <width>131</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="autoFillBackground">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="CB_IdC">
-      <property name="geometry">
-       <rect>
-        <x>210</x>
-        <y>80</y>
-        <width>181</width>
         <height>24</height>
        </rect>
       </property>
@@ -3464,47 +3451,6 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QLabel" name="label_45">
-      <property name="geometry">
-       <rect>
-        <x>210</x>
-        <y>120</y>
-        <width>181</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Estado del Pedido</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="CB_EstadoP">
-      <property name="geometry">
-       <rect>
-        <x>210</x>
-        <y>140</y>
-        <width>181</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="autoFillBackground">
-       <bool>true</bool>
-      </property>
-      <item>
-       <property name="text">
-        <string/>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Pendiente</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Completado</string>
-       </property>
-      </item>
-     </widget>
      <widget class="QTableWidget" name="tableWidget">
       <property name="geometry">
        <rect>
@@ -3560,6 +3506,16 @@
        <string>Buscar</string>
       </property>
      </widget>
+     <widget class="QLineEdit" name="tbx_ClientePedido">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>80</y>
+        <width>151</width>
+        <height>24</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -3569,7 +3525,7 @@
      <x>0</x>
      <y>0</y>
      <width>802</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
