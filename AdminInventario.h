@@ -76,6 +76,15 @@ struct Pedido
         this->Estado="Pendiente";
         this->FechaDeEntrega=FechaDeEntrega;
     }
+    Pedido()
+    {
+        this->ID="";
+        this->IDProducto="";
+        this->Cantidad=0;
+        this->IDCliente="";
+        this->Estado="Pendiente";
+        this->FechaDeEntrega="";
+    }
 };
 
 

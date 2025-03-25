@@ -69,6 +69,25 @@ void MainWindow::ActualizarTablaClientes()
     }
 }
 
+void MainWindow::ActualizarTablaPedidos()
+{
+    ui->tbl_Pedidos->clear();
+    ui->tbl_Pedidos->setColumnCount(6);
+    ui->tbl_Pedidos->setHorizontalHeaderLabels(QStringList()<<"ID"<<"ID de Producto"<<"Cantidad"<<"ID del Cliente"<<"Estado"<<"Fecha de Entrega");
+    ui->tbl_Pedidos->setRowCount(AdministradorInventario.Pedidos.size());
+
+    for(uint i=0; i<AdministradorInventario.Pedidos.size();i++)
+    {
+        ui->tbl_Pedidos->setItem(i,0,new QTableWidgetItem(QString::fromStdString(AdministradorInventario.Pedidos[i].ID)));
+        ui->tbl_Pedidos->setItem(i,1,new QTableWidgetItem(QString::fromStdString(AdministradorInventario.Pedidos[i].IDProducto)));
+        ui->tbl_Pedidos->setItem(i,2,new QTableWidgetItem(QString::number(AdministradorInventario.Pedidos[i].Cantidad)));
+        ui->tbl_Pedidos->setItem(i,3,new QTableWidgetItem(QString::fromStdString(AdministradorInventario.Pedidos[i].IDCliente)));
+        ui->tbl_Pedidos->setItem(i,4,new QTableWidgetItem(QString::fromStdString(AdministradorInventario.Pedidos[i].Estado)));
+        ui->tbl_Pedidos->setItem(i,5,new QTableWidgetItem(QString::fromStdString(AdministradorInventario.Pedidos[i].FechaDeEntrega)));
+    }
+
+}
+
 string MainWindow::generateIDVenta()
 {
     time_t now = time(0);
@@ -126,7 +145,9 @@ void MainWindow::on_GestionV_PB_clicked()
 
 void MainWindow::on_GestionP_PB_clicked()
 {
-     ui->stackedWidget->setCurrentIndex(7);
+    AdministradorInventario.CargarPedidos();
+    ActualizarTablaPedidos();
+    ui->stackedWidget->setCurrentIndex(7);
 }
 
 
@@ -402,6 +423,8 @@ void MainWindow::on_PB_CrearPedido_clicked()
     {
         Pedido nuevo(ID,IDProducto,Cantidad,IDCliente,FechaDeEntrega);
         AdministradorInventario.Pedidos.push_back(nuevo);
+        AdministradorInventario.GuardarPedidos();
+        ActualizarTablaPedidos();
 
     }
     else if(!ProductoValido)
@@ -583,6 +606,42 @@ void MainWindow::on_PB_BuscarV_clicked()
                     item->setBackground(QBrush(Qt::yellow)); // Resaltar con color amarillo
                 }
             }
+        }
+    }
+}
+
+
+void MainWindow::on_PB_ReporteVentas_clicked()
+{
+    AdministradorInventario.GenerarReporteDeVentas();
+}
+
+
+void MainWindow::on_PB_Completado_clicked()
+{
+    string ID = ui->tbl_Pedidos->selectedItems().at(0)->text().toStdString();
+    for(int i=0;i<AdministradorInventario.Pedidos.size();i++)
+    {
+        if(ID==AdministradorInventario.Pedidos[i].ID)
+        {
+           AdministradorInventario.Pedidos[i].Estado="Completado";
+           AdministradorInventario.GuardarPedidos();
+           ActualizarTablaPedidos();
+        }
+    }
+}
+
+
+void MainWindow::on_PB_Completado_2_clicked()
+{
+    string ID = ui->tbl_Pedidos->selectedItems().at(0)->text().toStdString();
+    for(int i=0;i<AdministradorInventario.Pedidos.size();i++)
+    {
+        if(ID==AdministradorInventario.Pedidos[i].ID)
+        {
+           AdministradorInventario.Pedidos[i].Estado="Cancelado";
+           AdministradorInventario.GuardarPedidos();
+           ActualizarTablaPedidos();
         }
     }
 }

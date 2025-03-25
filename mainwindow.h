@@ -84,12 +84,19 @@ private slots:
 
     void on_PB_BuscarV_clicked();
 
+    void on_PB_ReporteVentas_clicked();
+
+    void on_PB_Completado_clicked();
+
+    void on_PB_Completado_2_clicked();
+
 private:
     Ui::MainWindow *ui;
     AdministradorEmpleados AdminEmpleados;
     AdminInventario AdministradorInventario;
     void ReloadTable();
     void ActualizarTablaClientes();
+    void ActualizarTablaPedidos();
     string generateIDVenta();
 };
 #endif // MAINWINDOW_H
